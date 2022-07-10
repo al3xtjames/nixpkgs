@@ -21742,6 +21742,8 @@ with pkgs;
 
   jflex = callPackage ../development/libraries/java/jflex { };
 
+  jna = callPackage ../development/libraries/java/jna { };
+
   lombok = callPackage ../development/libraries/java/lombok { };
 
   lucene = callPackage ../development/libraries/java/lucene { };
