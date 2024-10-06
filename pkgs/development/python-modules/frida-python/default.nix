@@ -17,6 +17,11 @@ let
       hash = "sha256-5VAZnpHQ5wjl7IM96GhIKOfFYHFDKKOoSjN1STna2UA=";
     };
 
+    x86_64-darwin = fetchurl {
+      url = "https://github.com/frida/frida/releases/download/${version}/frida-core-devkit-${version}-macos-x86_64.tar.xz";
+      hash = "sha256-gY5AP9detwpDv9PjAsxKZOMS6aUlH1ANGwz8nukNpMQ=";
+    };
+
     x86_64-linux = fetchurl {
       url = "https://github.com/frida/frida/releases/download/${version}/frida-core-devkit-${version}-linux-x86_64.tar.xz";
       hash = "sha256-yNXNqv8eCbpdQKFShpAh6rUCEuItrOSNNLOjESimPdk=";
@@ -62,6 +67,6 @@ buildPythonPackage rec {
     homepage = "https://www.frida.re";
     license = lib.licenses.wxWindows;
     maintainers = with lib.maintainers; [ s1341 ];
-    platforms = [ "aarch64-darwin" "x86_64-linux" ];
+    platforms = [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" ];
   };
 }
