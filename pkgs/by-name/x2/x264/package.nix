@@ -6,68 +6,96 @@
   enableShared ? !stdenv.hostPlatform.isStatic,
 }:
 
-stdenv.mkDerivation {
-  pname = "x264";
-  version = "0-unstable-2025-09-10";
+stdenv.mkDerivation (
+  finalAttrs:
+  let
+    versionParts = lib.strings.splitString " " finalAttrs.version;
 
-  src = fetchFromGitLab {
-    domain = "code.videolan.org";
-    owner = "videolan";
-    repo = "x264";
-    rev = "0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee";
-    hash = "sha256-yV/uN0Bgx+GbwGBnr/P0w9bnu9UXaa3YRPa7TICq24w=";
-  };
+    versionNumberParts = lib.strings.splitString "." (lib.lists.head versionParts);
+    # X264_BUILD in x264_config.h
+    apiVersion = lib.lists.elemAt versionNumberParts 1;
+    # X264_REV in x264_config.h
+    numCommits = lib.lists.last versionNumberParts;
 
-  patches = [
-    # Upstream ./configure greps for (-mcpu|-march|-mfpu) in CFLAGS, which in nix
-    # is put in the cc wrapper anyway.
-    ./disable-arm-neon-default.patch
-  ];
+    gitRevision = lib.lists.last versionParts;
+  in
+  {
+    pname = "x264";
+    # X264_POINTVER in x264_config.h
+    version = "0.165.3223 0480cb0";
 
-  postPatch = lib.optionalString stdenv.hostPlatform.isDarwin ''
-    substituteInPlace Makefile --replace-fail \
-      '$(if $(STRIP), $(STRIP) -x $@)' '$(if $(STRIP), $(STRIP) -S $@)'
-  '';
+    src = fetchFromGitLab {
+      domain = "code.videolan.org";
+      owner = "videolan";
+      repo = "x264";
+      rev = gitRevision;
+      hash = "sha256-yV/uN0Bgx+GbwGBnr/P0w9bnu9UXaa3YRPa7TICq24w=";
+    };
 
-  enableParallelBuilding = true;
+    patches = [
+      # Upstream ./configure greps for (-mcpu|-march|-mfpu) in CFLAGS, which in nix
+      # is put in the cc wrapper anyway.
+      ./disable-arm-neon-default.patch
+    ];
 
-  outputs = [
-    "out"
-    "lib"
-    "dev"
-  ];
-
-  preConfigure =
-    lib.optionalString stdenv.hostPlatform.isx86 ''
-      # `AS' is set to the binutils assembler, but we need nasm
-      unset AS
-    ''
-    + lib.optionalString (stdenv.hostPlatform.isAarch || stdenv.hostPlatform.isLoongArch64) ''
-      export AS=$CC
+    postPatch = lib.optionalString stdenv.hostPlatform.isDarwin ''
+      substituteInPlace Makefile --replace-fail \
+        '$(if $(STRIP), $(STRIP) -x $@)' '$(if $(STRIP), $(STRIP) -S $@)'
     '';
 
-  configureFlags =
-    lib.optional enableShared "--enable-shared"
-    ++ lib.optional (!stdenv.hostPlatform.isi686) "--enable-pic"
-    ++ lib.optional (
-      stdenv.buildPlatform != stdenv.hostPlatform
-    ) "--cross-prefix=${stdenv.cc.targetPrefix}";
+    enableParallelBuilding = true;
 
-  makeFlags = [
-    "BASHCOMPLETIONSDIR=$(out)/share/bash-completion/completions"
-    "install-bashcompletion"
-    "install-lib-shared"
-  ];
+    outputs = [
+      "out"
+      "lib"
+      "dev"
+    ];
 
-  nativeBuildInputs = lib.optional stdenv.hostPlatform.isx86 nasm;
+    preConfigure =
+      lib.optionalString stdenv.hostPlatform.isx86 ''
+        # `AS' is set to the binutils assembler, but we need nasm
+        unset AS
+      ''
+      + lib.optionalString (stdenv.hostPlatform.isAarch || stdenv.hostPlatform.isLoongArch64) ''
+        export AS=$CC
+      '';
 
-  meta = {
-    description = "Library for encoding H264/AVC video streams";
-    branch = "stable";
-    mainProgram = "x264";
-    homepage = "http://www.videolan.org/developers/x264.html";
-    license = lib.licenses.gpl2Plus;
-    platforms = lib.platforms.unix ++ lib.platforms.windows;
-    maintainers = [ ];
-  };
-}
+    configureFlags =
+      lib.optional enableShared "--enable-shared"
+      ++ lib.optional (!stdenv.hostPlatform.isi686) "--enable-pic"
+      ++ lib.optional (
+        stdenv.buildPlatform != stdenv.hostPlatform
+      ) "--cross-prefix=${stdenv.cc.targetPrefix}";
+
+    postConfigure = ''
+      substituteInPlace x264_config.h --replace-fail \
+        "X264_VERSION \"\"" "X264_VERSION \" r${numCommits} ${gitRevision}\""
+
+      substituteInPlace x264_config.h --replace-fail \
+        "X264_POINTVER \"0.${apiVersion}.x\"" "X264_POINTVER \"${finalAttrs.version}\""
+
+      cat << EOF >> x264_config.h
+      #define X264_REV ${numCommits}
+      #define X264_REV_DIFF 0
+      EOF
+    '';
+
+    makeFlags = [
+      "BASHCOMPLETIONSDIR=$(out)/share/bash-completion/completions"
+      "install-bashcompletion"
+      "install-lib-shared"
+    ];
+
+    nativeBuildInputs = lib.optional stdenv.hostPlatform.isx86 nasm;
+
+    meta = {
+      description = "Library for encoding H264/AVC video streams";
+      branch = "stable";
+      mainProgram = "x264";
+      homepage = "http://www.videolan.org/developers/x264.html";
+      license = lib.licenses.gpl2Plus;
+      platforms = lib.platforms.unix ++ lib.platforms.windows;
+      maintainers = [ ];
+    };
+  }
+)
