@@ -1082,6 +1082,8 @@ self: super: with self; {
 
   aspy-yaml = callPackage ../development/python-modules/aspy-yaml { };
 
+  ass = callPackage ../development/python-modules/ass { };
+
   assay = callPackage ../development/python-modules/assay { };
 
   assertpy = callPackage ../development/python-modules/assertpy { };
