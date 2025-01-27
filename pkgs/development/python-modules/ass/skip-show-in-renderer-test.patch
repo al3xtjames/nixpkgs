@@ -1,0 +1,12 @@
+diff --git a/_renderer_test.py b/_renderer_test.py
+index 064a919..5e7ad3b 100755
+--- a/_renderer_test.py
++++ b/_renderer_test.py
+@@ -129,7 +129,3 @@ for img in r.render_frame(t, timedelta(0)):
+             g_out = ((g * a_src) + (g_dst * (256 - a_src))) // 256
+             b_out = ((b * a_src) + (b_dst * (256 - a_src))) // 256
+             im_data[x + img.dst_x, y + img.dst_y] = (r_out, g_out, b_out)
+-
+-im_out.show()
+-
+-im_out.save("test.png")
