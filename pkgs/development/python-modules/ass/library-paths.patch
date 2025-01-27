@@ -1,0 +1,13 @@
+diff --git a/ass/renderer.py b/ass/renderer.py
+index f32c564..382eabe 100644
+--- a/src/ass/renderer.py
++++ b/src/ass/renderer.py
+@@ -3,7 +3,7 @@ import ctypes.util
+ 
+ from datetime import timedelta
+ 
+-_libass = ctypes.cdll.LoadLibrary(ctypes.util.find_library("ass"))
++_libass = ctypes.cdll.LoadLibrary("@libass@")
+ _libc = ctypes.cdll.LoadLibrary(ctypes.util.find_library("c"))
+ 
+ 
