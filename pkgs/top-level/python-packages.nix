@@ -1419,6 +1419,8 @@ self: super: with self; {
 
   aspell-python-py3 = callPackage ../development/python-modules/aspell-python-py3 { };
 
+  ass = callPackage ../development/python-modules/ass { };
+
   assay = callPackage ../development/python-modules/assay { };
 
   assertpy = callPackage ../development/python-modules/assertpy { };
