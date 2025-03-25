@@ -54,13 +54,15 @@ lib.extendMkDerivation {
     // lib.optionalAttrs (args ? xcodeHash) {
       postUnpack =
         args.postUnpack or ""
-        + lib.concatMapStrings (
-          file:
-          if baseNameOf file == "meson.build.in" then
-            "substitute ${lib.escapeShellArg "${file}"} \"$sourceRoot/meson.build\" --subst-var version\n"
-          else
-            "cp ${lib.escapeShellArg "${file}"} \"$sourceRoot/\"${lib.escapeShellArg (baseNameOf file)}\n"
-        ) mesonFiles;
+        + lib.optionalString (!(args.dontCopyMeson or false)) (
+          lib.concatMapStrings (
+            file:
+            if baseNameOf file == "meson.build.in" then
+              "substitute ${lib.escapeShellArg "${file}"} \"$sourceRoot/meson.build\" --subst-var version\n"
+            else
+              "cp ${lib.escapeShellArg "${file}"} \"$sourceRoot/\"${lib.escapeShellArg (baseNameOf file)}\n"
+          ) mesonFiles
+        );
 
       xcodeProject = args.xcodeProject or "${releaseName}.xcodeproj";
 
