@@ -9,26 +9,22 @@
 stdenv.mkDerivation (
   finalAttrs:
   let
-    versionParts = lib.strings.splitString " " finalAttrs.version;
-
-    versionNumberParts = lib.strings.splitString "." (lib.lists.head versionParts);
+    versionNumberParts = lib.strings.splitString "." finalAttrs.version;
     # X264_BUILD in x264_config.h
     apiVersion = lib.lists.elemAt versionNumberParts 1;
     # X264_REV in x264_config.h
     numCommits = lib.lists.last versionNumberParts;
-
-    gitRevision = lib.lists.last versionParts;
+    gitRev = builtins.substring 0 7 finalAttrs.src.rev;
   in
   {
     pname = "x264";
-    # X264_POINTVER in x264_config.h
-    version = "0.165.3223 0480cb0";
+    version = "0.165.3223";
 
     src = fetchFromGitLab {
       domain = "code.videolan.org";
       owner = "videolan";
       repo = "x264";
-      rev = gitRevision;
+      rev = "0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee";
       hash = "sha256-yV/uN0Bgx+GbwGBnr/P0w9bnu9UXaa3YRPa7TICq24w=";
     };
 
@@ -69,10 +65,12 @@ stdenv.mkDerivation (
 
     postConfigure = ''
       substituteInPlace x264_config.h --replace-fail \
-        "X264_VERSION \"\"" "X264_VERSION \" r${numCommits} ${gitRevision}\""
+        "X264_VERSION \"\"" \
+        "X264_VERSION \" r${numCommits} ${gitRev}\""
 
       substituteInPlace x264_config.h --replace-fail \
-        "X264_POINTVER \"0.${apiVersion}.x\"" "X264_POINTVER \"${finalAttrs.version}\""
+        "X264_POINTVER \"0.${apiVersion}.x\"" \
+        "X264_POINTVER \"${finalAttrs.version} ${gitRev}\""
 
       cat << EOF >> x264_config.h
       #define X264_REV ${numCommits}
