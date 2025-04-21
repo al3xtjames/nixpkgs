@@ -22,14 +22,14 @@ stdenv.mkDerivation (
   {
     pname = "x264";
     # X264_POINTVER in x264_config.h
-    version = "0.164.3204 373697b";
+    version = "0.165.3215 32c3b80";
 
     src = fetchFromGitLab {
       domain = "code.videolan.org";
       owner = "videolan";
       repo = "x264";
       rev = gitRevision;
-      hash = "sha256-WWtS/UfKA4i1yakHErUnyT/3/+Wy2H5F0U0CmxW4ick=";
+      hash = "sha256-HfipbLykljFee7IzjsuS2qW4H5LgttlonfQW2bYL48Y=";
     };
 
     patches = [
