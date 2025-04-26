@@ -1,0 +1,43 @@
+diff --git a/buildscripts/multicomp b/buildscripts/multicomp
+index 2f2a7f96..a2d06634 100644
+--- a/buildscripts/multicomp
++++ b/buildscripts/multicomp
+@@ -4,6 +4,7 @@
+ #   $1 is, e.g., /usr/libexec/icmake/icm-dep
+ 
+ . ../buildscripts/precomp
++. ../buildscripts/flags
+   
+ 
+ build()
+@@ -41,9 +42,9 @@ IFS='
+     opts=" -Wall -Werror"
+ 
+     ../tmp/usr/libexec/icmake/icm-multicomp -q jobs \
+-        '/usr/bin/g++ -c -o $2 '${ICMAKE_CPPSTD}"${opts}"' $1' || exit 1
++        ${CXX}' -c -o $2 '${ICMAKE_CPPSTD}"${opts}"' $1' || exit 1
+  
+-    /usr/bin/g++ -o ../tmp/$1 tmp/*.o -L../tmp -licmake ${LDFLAGS} || exit 1
++    ${CXX} -o ../tmp/$1 tmp/*.o -L../tmp -licmake ${LDFLAGS} || exit 1
+ 
+     rm -rf jobs tmp *.gch */*.gch 
+ }   
+diff --git a/buildscripts/precomp b/buildscripts/precomp
+index c977d28a..f79b3cff 100644
+--- a/buildscripts/precomp
++++ b/buildscripts/precomp
+@@ -1,11 +1,13 @@
+ # loaded and called from program's icm_bootstrap scripts
+ 
++. ../buildscripts/flags
++
+ precomp()
+ {
+     echo "
+ Buiding tmp/spch.gch and using .ih.gch files"
+ 
+-    OPTS='g++ -Wall -Werror -O2 -c -o $2 '
++    OPTS=${CXX}' -Wall -Werror -O2 -c -o $2 '
+     OPTS="$OPTS ${ICMAKE_CPPSTD}${opts} -x c++header \$1"
+ 
+     ../tmp/usr/libexec/icmake/icm-spch $1 --all spch tmp/ "'${OPTS}'"

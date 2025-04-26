@@ -1,0 +1,66 @@
+diff --git a/install b/install
+index fc818e73..638011f4 100755
+--- a/install
++++ b/install
+@@ -57,7 +57,7 @@ progs()
+ 
+     try mkdir -p $storageDir${BINDIR} $storageDir${LIBDIR}
+ 
+-    try cp tmp${BINDIR}/icmake tmp${BINDIR}/icmbuild tmp${BINDIR}/icmodmap \
++    try cp tmp/usr/bin/icmake tmp/usr/bin/icmbuild tmp/usr/bin/icmodmap \
+                 $storageDir${BINDIR}
+ 
+     # a possibly running icm-exec program must first be removed before
+@@ -67,7 +67,7 @@ progs()
+         try rm $storageDir${LIBDIR}/icm-exec 
+     fi
+ 
+-    try cp -r tmp${LIBDIR}/* $storageDir${LIBDIR}
++    try cp -r tmp/usr/libexec/icmake/* $storageDir${LIBDIR}
+     echo
+ }
+ 
+@@ -76,8 +76,8 @@ progs()
+ 
+ tarInstall()
+ {
+-    echo installing tmp${1} to $storageDir${1}
+-    (cd tmp; tar cf - .$1) | (cd $storageDir; tar xf -)
++    echo installing tmp${1} to $storageDir${2}
++    (cd tmp${1}; tar cf - .) | (mkdir -p $storageDir${2}; cd $storageDir${2}; tar xf -)
+     [ "$?" -eq "0" ] || exit 1
+ }
+ 
+@@ -98,13 +98,13 @@ scripts()
+     # convert icmstart.in to docdir/icmstart.im
+     # compress the icmstart.im script in the documentation directory:
+         try scripts/convert tmp/icmstart.in tmp/icmstart.im
+-        echo "    gzip -9cn tmp/icmstart.im > tmp${DOCDIR}/icmstart.im.gz"
+-        gzip -9cn tmp/icmstart.im > tmp${DOCDIR}/icmstart.im.gz || exit 1
++        echo "    gzip -9cn tmp/icmstart.im > $storageDir${DOCDIR}/icmstart.im.gz"
++        gzip -9cn tmp/icmstart.im > $storageDir${DOCDIR}/icmstart.im.gz || exit 1
+ 
+     # compile icmstart.im to $storageDir$LIBDIR/icmstart.bim so icmstart can
+     # immediately be used w/o having to compile it first.
+-        try tmp${LIBDIR}/icm-pp tmp/icmstart.im tmp/icmstart.pim
+-        try tmp${LIBDIR}/icm-comp tmp/icmstart.pim \
++        try tmp/usr/libexec/icmake/icm-pp tmp/icmstart.im tmp/icmstart.pim
++        try tmp/usr/libexec/icmake/icm-comp tmp/icmstart.pim \
+                                   $storageDir${LIBDIR}/icmstart.bim
+     echo
+ }
+@@ -113,10 +113,10 @@ case $1 in
+     (all)
+         progs
+         scripts
+-        tarInstall ${MANDIR}
+-        tarInstall ${SKELDIR}
+-        tarInstall ${DOCDIR}
+-        tarInstall ${CONFDIR}
++        tarInstall "/usr/share/man" ${MANDIR}
++        tarInstall "/usr/share/icmake" ${SKELDIR}
++        tarInstall "/usr/share/doc/icmake" ${DOCDIR}
++        tarInstall "/etc/icmake" ${CONFDIR}
+         echo
+         echo "Done. Consider calling ./clean"
+         echo

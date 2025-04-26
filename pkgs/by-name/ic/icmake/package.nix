@@ -2,45 +2,64 @@
   lib,
   stdenv,
   fetchFromGitLab,
-  makeWrapper,
-  gcc,
-  ncurses,
+  nix-update-script,
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "icmake";
-  version = "9.03.01";
+  version = "13.02.00";
 
   src = fetchFromGitLab {
-    sha256 = "05r0a69w0hv2qhjpb2bxd0lmp2vv5r2d4iggg6ly4miam0i318jy";
-    rev = version;
-    repo = "icmake";
     owner = "fbb-git";
+    repo = "icmake";
+    tag = finalAttrs.version;
+    hash = "sha256-bD7ykaO8ZZ1Gwpj+dpTsaJxLnf4hsJLXJK/7cCc/h6M=";
   };
 
-  setSourceRoot = ''
-    sourceRoot=$(echo */icmake)
+  sourceRoot = "${finalAttrs.src.name}/icmake";
+
+  env.ICMAKE_CPPSTD = "-std=c++26";
+
+  strictDeps = true;
+
+  patches = [
+    ./buildscripts-use-cxx.patch
+    ./fix-install-paths.patch
+    ./icmbuild-use-bindir.patch
+  ];
+
+  postPatch = ''
+    patchShebangs .
+
+    substituteInPlace INSTALL.im --replace-fail "usr/" ""
   '';
 
-  nativeBuildInputs = [ makeWrapper ];
-  buildInputs = [ gcc ];
+  configurePhase = ''
+    runHook preConfigure
 
-  preConfigure = ''
-    patchShebangs ./
-    substituteInPlace INSTALL.im --replace "usr/" ""
+    ./prepare "$out"
+
+    runHook postConfigure
   '';
 
   buildPhase = ''
-    ./icm_prepare $out
-    ./icm_bootstrap x
+    runHook preBuild
+
+    ./buildlib "$out"
+    ./build all
+
+    runHook postBuild
   '';
 
   installPhase = ''
-    ./icm_install all /
+    runHook preBuild
 
-    wrapProgram $out/bin/icmbuild \
-     --prefix PATH : ${ncurses}/bin
+    ./install all /
+
+    runHook postBuild
   '';
+
+  passthru.updateScript = nix-update-script { };
 
   meta = with lib; {
     description = "Program maintenance (make) utility using a C-like grammar";
@@ -49,4 +68,4 @@ stdenv.mkDerivation rec {
     maintainers = with maintainers; [ pSub ];
     platforms = platforms.linux;
   };
-}
+})

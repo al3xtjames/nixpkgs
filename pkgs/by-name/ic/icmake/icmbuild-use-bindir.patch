@@ -1,0 +1,13 @@
+diff --git a/icmbuild/main.cc b/icmbuild/main.cc
+index 4bdd6e5d..3e30280a 100644
+--- a/icmbuild/main.cc
++++ b/icmbuild/main.cc
+@@ -20,7 +20,7 @@ int main(int argc, char **argv)
+         return 1;
+     }
+ 
+-    string cmd{ "/usr/bin/icmake -t. " LIBDIR "/icmbuild" };
++    string cmd{ BINDIR "/icmake -t. " LIBDIR "/icmbuild" };
+     
+     for_each(argv + 1, argv + argc, 
+         [&](char *arg)
