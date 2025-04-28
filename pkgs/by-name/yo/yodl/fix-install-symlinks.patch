@@ -1,0 +1,21 @@
+diff --git a/icmake/install b/icmake/install
+index c90f774..f735e52 100644
+--- a/icmake/install
++++ b/icmake/install
+@@ -22,13 +22,13 @@ void _installYodlConverters(string where, int debian)
+     string gzipped;
+    
+     if (debian == 1)
+-        gzipped = ".1.gz ";
++        gzipped = ".7.gz ";
+     else
+-        gzipped = ".1 ";
++        gzipped = ".7 ";
+ 
+     for (idx = listlen(conversions); idx--; )
+         run("ln -sf yodlconverters" + gzipped + 
+-            where + MAN + "/man1/yodl2" + conversions[idx] + gzipped);
++            where + MAN + "/man7/yodl2" + conversions[idx] + gzipped);
+ }
+ 
+ void installExit(string what, string where)
