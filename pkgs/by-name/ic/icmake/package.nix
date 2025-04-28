@@ -13,7 +13,14 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "fbb-git";
     repo = "icmake";
     tag = finalAttrs.version;
-    hash = "sha256-bD7ykaO8ZZ1Gwpj+dpTsaJxLnf4hsJLXJK/7cCc/h6M=";
+    hash = "sha256-1MP3o1RwYPK8k2ziRjyLsYRq0Q0rASVdFeEhD62Oq74=";
+    postFetch = ''
+      cd $out/icmake/support
+      mkdir bobcat support
+      tar -xzf bobcat.tgz -C bobcat
+      tar -xzf support.tgz -C support
+      rm bobcat.tgz support.tgz
+    '';
   };
 
   sourceRoot = "${finalAttrs.src.name}/icmake";
@@ -26,6 +33,7 @@ stdenv.mkDerivation (finalAttrs: {
     ./buildscripts-use-cxx.patch
     ./fix-install-paths.patch
     ./icmbuild-use-bindir.patch
+    ./buildlib-use-extracted-tarballs.patch
   ];
 
   postPatch = ''

@@ -1,0 +1,19 @@
+diff --git a/buildlib b/buildlib
+index f86a4f4e..c4f75a6f 100755
+--- a/buildlib
++++ b/buildlib
+@@ -81,12 +81,11 @@ compile()
+ 
+ mkdir -p ../tmp/build
+ cp -r xerr ../tmp/build
++cp -r bobcat/* ../tmp/build
++cp -r support/* ../tmp/build
+ 
+ try cd ${BASE}/tmp/build
+   
+-tar xzf ../../support/bobcat.tgz
+-tar xzf ../../support/support.tgz
+-
+ compile
+ try ar rs ../libicmake.a *.o
+ 
