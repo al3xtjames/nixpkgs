@@ -1,0 +1,40 @@
+diff --git a/multicmp/compiler/data.cc b/multicmp/compiler/data.cc
+index 3fa1d9f..77fef9c 100644
+--- a/multicmp/compiler/data.cc
++++ b/multicmp/compiler/data.cc
+@@ -1,5 +1,5 @@
+ #include "compiler.ih"
+ 
+ string Compiler::s_compileCommand
+-                 { "g++ -c -o $2 ${ICMAKE_CPPSTD} -Wall -Werror $1" };
++                 { "${CXX} -c -o $2 ${ICMAKE_CPPSTD} -Wall -Werror $1" };
+ 
+diff --git a/spch/process/data.cc b/spch/process/data.cc
+index 83d2050..fb4499b 100644
+--- a/spch/process/data.cc
++++ b/spch/process/data.cc
+@@ -5,6 +5,6 @@
+ Pattern Process::s_include{ R"_(^\s*#include\s*")_" R"_(([^"]+)")_" };
+ string Process::s_precompileCmd
+ { 
+-    "g++ -o $2 ${ICMAKE_CPPSTD} -O2 -Wall -Werror -x c++-header $1"
++    "${CXX} -o $2 ${ICMAKE_CPPSTD} -O2 -Wall -Werror -x c++-header $1"
+ };
+ 
+diff --git a/support/support/tools/commmand.cc b/support/support/tools/commmand.cc
+index 7c1f936..9eafbcc 100644
+--- a/support/support/tools/commmand.cc
++++ b/support/support/tools/commmand.cc
+@@ -23,5 +23,12 @@ string Tools::command(string const &moldCmd, string const &dollar1,
+         cmd.replace(pos, sizeof("${ICMAKE_CPPSTD}") - 1, cxx);
+     }
+ 
++    if (size_t pos = cmd.find("${CXX}"); pos != string::npos)
++    {
++        char const *envVar = getenv("CXX");
++        string cxx{ envVar != 0 ? envVar : "g++" };
++        cmd.replace(pos, sizeof("${CXX}") - 1, cxx);
++    }
++
+     return setPath(cmd);
+ }

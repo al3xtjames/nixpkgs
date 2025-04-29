@@ -25,7 +25,21 @@ stdenv.mkDerivation (finalAttrs: {
 
   sourceRoot = "${finalAttrs.src.name}/icmake";
 
-  env.ICMAKE_CPPSTD = "-std=c++26";
+  env = {
+    ICMAKE_CPPSTD = "-std=c++26";
+    NIX_CFLAGS_COMPILE = lib.optionalString stdenv.cc.isClang (builtins.toString [
+      # support/bobcat/fswap/fswappod.f:4:12
+      "-Wno-mismatched-tags"
+      # support/bobcat/stat/stat2.cc:8:13
+      "-Wno-unqualified-std-cast-call"
+      # comp/parser/inc/statement:4:19
+      "-Wno-pessimizing-move"
+      # comp/lex.cc:1092:30
+      "-Wno-braced-scalar-init"
+      # parser/parse.cc:57:16
+      "-Wno-unused-const-variable"
+    ]);
+  };
 
   strictDeps = true;
 
@@ -34,6 +48,15 @@ stdenv.mkDerivation (finalAttrs: {
     ./fix-install-paths.patch
     ./icmbuild-use-bindir.patch
     ./buildlib-use-extracted-tarballs.patch
+
+    # Clang/libc++ compat
+    ./0002-glob-avoid-deleting-non-static-d_share-member.patch
+    ./0003-level-add-missing-include-for-size_t.patch
+    ./0004-log-use-static_cast-to-upcast.patch
+    ./include-system-error.patch
+    ./use-file-clock.patch
+    ./stack-reorder-includes.patch
+    ./runtime-use-cxx.patch
   ];
 
   postPatch = ''

@@ -1,0 +1,19 @@
+diff --git a/exec/stack/stack.ih b/exec/stack/stack.ih
+index 93ab82f..f9bf969 100644
+--- a/exec/stack/stack.ih
++++ b/exec/stack/stack.ih
+@@ -1,5 +1,3 @@
+-#include "stack.h"
+-
+ #include <filesystem>
+ 
+ #ifdef fbb
+@@ -16,6 +14,8 @@
+ #include "../int/int.h"
+ #include "../list/list.h"
+ 
++#include "stack.h"
++
+ extern char **environ;
+ 
+ using namespace std;

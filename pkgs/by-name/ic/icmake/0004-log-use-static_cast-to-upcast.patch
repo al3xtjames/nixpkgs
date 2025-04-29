@@ -1,0 +1,34 @@
+From abc97b20d518cd4871dab2d1740357efc6905347 Mon Sep 17 00:00:00 2001
+From: Alex James <git@alextjam.es>
+Date: Mon, 28 Apr 2025 00:43:37 -0500
+Subject: [PATCH 3/3] log: use static_cast to upcast
+
+Clang warns that this is UB.
+
+./../log/log.f:25:9: error: 'reinterpret_cast' from class 'Log' to its base at non-zero offset 'std::ostream &' (aka 'basic_ostream<char> &') behaves differently from 'static_cast' [-Werror,-Wreinterpret-base-class]
+   25 |         reinterpret_cast<std::ostream &>(log) << type;
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../log/log.f:25:9: note: use 'static_cast' to adjust the pointer correctly while upcasting
+   25 |         reinterpret_cast<std::ostream &>(log) << type;
+      |         ^~~~~~~~~~~~~~~~
+      |         static_cast
+---
+ support/bobcat/log/log.f | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/support/bobcat/log/log.f b/support/bobcat/log/log.f
+index e9bf6ba..ef4e608 100644
+--- a/support/bobcat/log/log.f
++++ b/support/bobcat/log/log.f
+@@ -22,7 +22,7 @@ template<typename Type>
+ Log &operator<<(Log &log, Type const &type)
+ {
+     if (log.d_active->levelOK or log.d_active->opfunOK)
+-        reinterpret_cast<std::ostream &>(log) << type;
++        static_cast<std::ostream &>(log) << type;
+ 
+     return log;
+ }
+-- 
+2.48.1
+

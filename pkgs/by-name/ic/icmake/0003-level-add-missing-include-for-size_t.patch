@@ -1,0 +1,40 @@
+From ff98030aeefdd8c6f7acad73ee0887a4a9a4adc5 Mon Sep 17 00:00:00 2001
+From: Alex James <git@alextjam.es>
+Date: Mon, 28 Apr 2025 00:41:19 -0500
+Subject: [PATCH 2/3] level: add missing include for size_t
+
+Otherwise this fails to compile with libc++:
+
+In file included from insertinto.cc:1:
+In file included from ./level.ih:1:
+./level:14:5: error: unknown type name 'size_t'
+   14 |     size_t d_level;
+      |     ^
+./level:17:24: error: unknown type name 'size_t'
+   17 |         explicit level(size_t lvel);
+      |                        ^
+In file included from insertinto.cc:1:
+In file included from ./level.ih:1:
+In file included from ./level:23:
+./level.f:1:21: error: unknown type name 'size_t'
+    1 | inline level::level(size_t lev)
+      |                     ^
+---
+ support/bobcat/level/level | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/support/bobcat/level/level b/support/bobcat/level/level
+index b405ff3..7c1766e 100644
+--- a/support/bobcat/level/level
++++ b/support/bobcat/level/level
+@@ -1,6 +1,7 @@
+ #ifndef INCLUDED_BOBCAT_LEVEL_
+ #define INCLUDED_BOBCAT_LEVEL_
+ 
++#include <cstddef>
+ #include <iosfwd>
+ 
+ namespace FBB
+-- 
+2.48.1
+

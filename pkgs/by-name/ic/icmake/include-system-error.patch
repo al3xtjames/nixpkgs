@@ -1,0 +1,24 @@
+diff --git a/spch/support/support.h b/spch/support/support.h
+index 92346e7..450c993 100644
+--- a/spch/support/support.h
++++ b/spch/support/support.h
+@@ -6,6 +6,7 @@
+ #include <string>
+ #include <filesystem>
+ #include <unordered_set>
++//#include <system_error>
+ 
+ #ifdef fbb
+     #include <bobcat/exception>
+@@ -13,11 +14,6 @@
+     #include "../../tmp/build/exception/exception"
+ #endif
+ 
+-namespace std
+-{
+-    class error_code;
+-}
+-
+ class Support
+ {
+     protected:
