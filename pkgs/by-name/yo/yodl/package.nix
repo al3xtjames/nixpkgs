@@ -30,10 +30,7 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   patches = [
-    (fetchpatch2 {
-      url = "https://salsa.debian.org/debian/yodl/-/raw/f3465d9cde4deab734cc24f9c5d44d4e3bcf0036/debian/patches/01-gcc15.patch";
-      hash = "sha256-d43lgJM+jpb60ELsmoFRjTMYbBfEj5lde5tb4zcHN24=";
-    })
+    ./add-missing-includes.patch
     ./fix-install-symlinks.patch
     ./replace-getopt.patch
   ];
@@ -43,7 +40,10 @@ stdenv.mkDerivation (finalAttrs: {
     patchShebangs macros/rawmacros
     patchShebangs scripts
 
-    substituteInPlace INSTALL.im --replace-fail "/usr" "$out"
+    substituteInPlace INSTALL.im \
+      --replace-fail "/usr" "$out" \
+      --replace-fail "gcc" "$CC" \
+      --replace-fail "g++" "$CXX"
 
     substituteInPlace scripts/yodl2whatever.in \
       --subst-var-by "getopt" "${lib.getBin util-linux}/bin/getopt"

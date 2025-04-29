@@ -1,0 +1,13 @@
+diff --git a/root/root.h b/root/root.h
+index 938608b..8bd75a5 100644
+--- a/root/root.h
++++ b/root/root.h
+@@ -11,6 +11,8 @@
+ #define _GNU_SOURCE
+ #endif
+ 
++#include <stdarg.h>
++#include <stdbool.h>
+ #include <stddef.h>
+ 
+ #define MAX_LINE_LENGTH (1000)
