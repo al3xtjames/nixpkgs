@@ -3,6 +3,7 @@
   fetchFromGitHub,
   fetchpatch,
   python3Packages,
+  nix-update-script,
 }:
 python3Packages.buildPythonApplication rec {
   pname = "scons";
@@ -33,6 +34,7 @@ python3Packages.buildPythonApplication rec {
     # expose the used python version so tools using this (and extensing scos
     # with other python modules) can use the exact same python version.
     inherit (python3Packages) python;
+    updateScript = nix-update-script { };
   };
 
   meta = {
