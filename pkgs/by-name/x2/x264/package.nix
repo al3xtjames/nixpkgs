@@ -18,14 +18,14 @@ stdenv.mkDerivation (
   in
   {
     pname = "x264";
-    version = "0.165.3215";
+    version = "0.165.3223";
 
     src = fetchFromGitLab {
       domain = "code.videolan.org";
       owner = "videolan";
       repo = "x264";
-      rev = "32c3b801191522961102d4bea292cdb61068d0dd";
-      hash = "sha256-HfipbLykljFee7IzjsuS2qW4H5LgttlonfQW2bYL48Y=";
+      rev = "0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee";
+      hash = "sha256-yV/uN0Bgx+GbwGBnr/P0w9bnu9UXaa3YRPa7TICq24w=";
     };
 
     patches = [
