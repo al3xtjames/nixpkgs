@@ -4,6 +4,7 @@
   fetchFromGitLab,
   nasm,
   enableShared ? !stdenv.hostPlatform.isStatic,
+  versionCheckHook,
 }:
 
 stdenv.mkDerivation (
@@ -85,6 +86,12 @@ stdenv.mkDerivation (
     ];
 
     nativeBuildInputs = lib.optional stdenv.hostPlatform.isx86 nasm;
+
+    doInstallCheck = true;
+
+    nativeInstallCheckInputs = [ versionCheckHook ];
+
+    versionCheckProgramArg = "--version";
 
     meta = {
       description = "Library for encoding H264/AVC video streams";
