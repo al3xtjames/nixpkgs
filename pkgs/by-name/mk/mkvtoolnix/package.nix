@@ -66,18 +66,23 @@ stdenv.mkDerivation (finalAttrs: {
 
   __structuredAttrs = true;
 
+  strictDeps = true;
+
   nativeBuildInputs = [
     autoreconfHook
     docbook_xsl
     gettext
-    gtest
     libxslt
+    qt6.qmake
     pkg-config
     rake
   ]
-  ++ optionals withGUI [ qt6.wrapQtAppsHook ];
+  ++ optionals withGUI [
+    qt6.wrapQtAppsHook
+    # strictDeps requires qtmultimedia to be added to nativeBuildInputs.
+    qt6.qtmultimedia
+  ];
 
-  # qtbase and qtmultimedia are needed without the GUI
   buildInputs = [
     boost
     flac
@@ -90,19 +95,27 @@ stdenv.mkDerivation (finalAttrs: {
     libvorbis
     nlohmann_json
     pugixml
-    qt6.qtbase
-    qt6.qtmultimedia
     utf8cpp
     zlib
   ]
-  ++ optionals withGUI [ cmark ]
-  ++ optionals stdenv.hostPlatform.isLinux [ qt6.qtwayland ];
+  ++ optionals withGUI [
+    cmark
+    qt6.qtbase
+    qt6.qtmultimedia
+  ]
+  ++ optionals (withGUI && stdenv.hostPlatform.isLinux) [ qt6.qtwayland ];
+
+  checkInputs = [
+    gtest
+  ];
 
   # autoupdate is not needed but it silences a ton of pointless warnings
   postPatch = ''
     patchShebangs . > /dev/null
     autoupdate configure.ac ac/*.m4
   '';
+
+  dontUseQmakeConfigure = true;
 
   configureFlags = [
     "--disable-debug"
