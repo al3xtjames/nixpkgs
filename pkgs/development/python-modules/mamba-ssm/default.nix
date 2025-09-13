@@ -19,14 +19,14 @@
 
 buildPythonPackage rec {
   pname = "mamba";
-  version = "2.2.2";
+  version = "2.2.5";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "state-spaces";
     repo = "mamba";
     tag = "v${version}";
-    hash = "sha256-R702JjM3AGk7upN7GkNK8u1q4ekMK9fYQkpO6Re45Ng=";
+    hash = "sha256-yEb7M0MO67BTZCg6N95I7ejDB4zSP3Lxidln+VhR190=";
   };
 
   build-system = [
