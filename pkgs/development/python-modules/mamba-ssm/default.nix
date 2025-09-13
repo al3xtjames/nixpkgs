@@ -13,6 +13,7 @@
   config,
   cudaSupport ? config.cudaSupport,
   which,
+  nix-update-script,
 }:
 
 buildPythonPackage rec {
@@ -64,6 +65,8 @@ buildPythonPackage rec {
 
   # pytest tests not enabled due to nvidia GPU dependency
   pythonImportsCheck = [ "mamba_ssm" ];
+
+  passthru.updateScript = nix-update-script { };
 
   meta = {
     description = "Linear-Time Sequence Modeling with Selective State Spaces";
