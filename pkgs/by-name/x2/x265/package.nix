@@ -2,11 +2,11 @@
   lib,
   gccStdenv,
   stdenv,
-  fetchurl,
+  fetchFromBitbucket,
+  fetchpatch2,
+  replaceVars,
   cmake,
   nasm,
-  fetchpatch,
-  fetchpatch2,
 
   # NUMA support enabled by default on NUMA platforms:
   numaSupport ? (
@@ -34,7 +34,13 @@ let
   isCross = stdenv.buildPlatform != stdenv.hostPlatform;
 in
 
-stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: let
+  versionParts = builtins.match "([0-9].[0-9])\\+?([0-9]+)?-?([0-9a-z]+)?" finalAttrs.version;
+  latestTag = lib.lists.elemAt versionParts 0;
+  orDefault = value: default: if value != null then value else default;
+  tagDistance = orDefault (lib.lists.elemAt versionParts 1) "0";
+  gitRev = orDefault (lib.lists.elemAt versionParts 2) latestTag;
+in {
   pname = "x265";
   version = "4.2";
 
@@ -43,11 +49,11 @@ stdenv.mkDerivation (finalAttrs: {
     "dev"
   ];
 
-  # Check that x265Version.txt contains the expected version number
-  # whether we fetch a source tarball or a tag from the git repo
-  src = fetchurl {
-    url = "https://bitbucket.org/multicoreware/x265_git/downloads/x265_${finalAttrs.version}.tar.gz";
-    hash = "sha256-QLHqBFPgMJ8OupNODd9TP49ilZZmeeiJTo8cHI1eEhA=";
+  src = fetchFromBitbucket {
+    owner = "multicoreware";
+    repo = "x265_git";
+    rev = gitRev;
+    hash = "sha256-gv0H3qPeK473GbZiq2fxuIMQdBFjvoeMpyf5/Y5wlyI=";
   };
 
   patches = [
@@ -58,21 +64,14 @@ stdenv.mkDerivation (finalAttrs: {
     # fix i686-linux build
     # https://bitbucket.org/multicoreware/x265_git/issues/1030
     ./fix-plt-rel.patch
+    (replaceVars ./simplify-cmake-version.patch {
+      x265_version = finalAttrs.version;
+      x265_latest_tag = latestTag;
+      x265_tag_distance = tagDistance;
+    })
   ];
 
-  sourceRoot = "x265_${finalAttrs.version}/source";
-
-  postPatch = ''
-    substituteInPlace cmake/Version.cmake \
-      --replace-fail "unknown" "${finalAttrs.version}" \
-      --replace-fail "0.0" "${finalAttrs.version}"
-  ''
-  # There is broken and complicated logic when setting X265_LATEST_TAG for
-  # mingwW64 builds. This bypasses the logic by setting it at the end of the
-  # file
-  + lib.optionalString stdenv.hostPlatform.isMinGW ''
-    echo 'set(X265_LATEST_TAG "${finalAttrs.version}")' >> ./cmake/Version.cmake
-  '';
+  sourceRoot = "source/source";
 
   nativeBuildInputs = [
     cmake
@@ -179,7 +178,7 @@ stdenv.mkDerivation (finalAttrs: {
     mainProgram = "x265";
     homepage = "https://www.x265.org";
     changelog = "https://x265.readthedocs.io/en/master/releasenotes.html#version-${
-      lib.strings.replaceStrings [ "." ] [ "-" ] finalAttrs.version
+      lib.strings.replaceStrings [ "." ] [ "-" ] latestTag
     }";
     license = lib.licenses.gpl2Plus;
     maintainers = [ ];
