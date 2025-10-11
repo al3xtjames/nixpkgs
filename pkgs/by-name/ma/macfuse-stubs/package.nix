@@ -9,12 +9,12 @@
   isFuse3 ? false,
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "macfuse-stubs";
   version = "5.1.3";
 
   src = fetchurl {
-    url = "https://github.com/osxfuse/osxfuse/releases/download/macfuse-${version}/macfuse-${version}.dmg";
+    url = "https://github.com/osxfuse/osxfuse/releases/download/macfuse-${finalAttrs.version}/macfuse-${finalAttrs.version}.dmg";
     hash = "sha256-5fgP+MPfgm6Zf7eGs1EloMamcvS7oncLDe9rpjyk74E=";
   };
 
@@ -34,17 +34,23 @@ stdenv.mkDerivation rec {
   sourceRoot = ".";
 
   buildPhase = ''
+    runHook preBuild
+
     pushd usr/local/lib
     for f in *.dylib; do
       tapi stubify --filetype=tbd-v2  "$f" -o "''${f%%.dylib}.tbd"
     done
     sed -i "s|^prefix=.*|prefix=$out|" pkgconfig/fuse{,3}.pc
     popd
+
+    runHook postBuild
   '';
 
   # NOTE: Keep in mind that different parts of macFUSE are distributed under a
   # different license
   installPhase = ''
+    runHook preInstall
+
     mkdir -p $out/include $out/lib/pkgconfig
   ''
   + lib.optionalString isFuse3 ''
@@ -56,9 +62,12 @@ stdenv.mkDerivation rec {
     cp usr/local/lib/libfuse{,.2}.tbd $out/lib
     cp usr/local/lib/pkgconfig/fuse.pc $out/lib/pkgconfig
     cp -R usr/local/include/fuse{,.h} $out/include
+  ''
+  + ''
+    runHook postInstall
   '';
 
-  passthru.warning = meta.description;
+  passthru.warning = finalAttrs.meta.longDescription;
 
   meta = {
     homepage = "https://osxfuse.github.io";
@@ -77,4 +86,4 @@ stdenv.mkDerivation rec {
       lgpl2Plus # libfuse
     ];
   };
-}
+})
