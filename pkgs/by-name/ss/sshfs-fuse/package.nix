@@ -8,7 +8,6 @@
   docutils,
   makeWrapper,
   fuse3,
-  macfuse-stubs,
   glib,
   which,
   python3Packages,
@@ -75,7 +74,6 @@ stdenv.mkDerivation (finalAttrs: {
   meta = {
     changelog = "https://github.com/libfuse/sshfs/blob/${finalAttrs.src.tag}/ChangeLog.rst";
     description = "FUSE-based filesystem that allows remote filesystems to be mounted over SSH";
-    longDescription = macfuse-stubs.warning;
     homepage = "https://github.com/libfuse/sshfs";
     license = lib.licenses.gpl2Plus;
     platforms = lib.platforms.darwin ++ lib.platforms.linux;
