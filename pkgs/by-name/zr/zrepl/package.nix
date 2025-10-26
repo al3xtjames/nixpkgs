@@ -53,7 +53,7 @@ buildGoModule (finalAttrs: {
     homepage = "https://zrepl.github.io/";
     changelog = "https://github.com/zrepl/zrepl/releases/tag/${finalAttrs.src.tag}";
     description = "One-stop, integrated solution for ZFS replication";
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.unix;
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [
       cole-h
