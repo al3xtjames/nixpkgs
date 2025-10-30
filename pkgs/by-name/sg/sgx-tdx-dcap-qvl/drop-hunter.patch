@@ -1,0 +1,197 @@
+diff --git a/AttestationApp/test/CMakeLists.txt b/AttestationApp/test/CMakeLists.txt
+index f8c0b2d..a67d82f 100644
+--- a/AttestationApp/test/CMakeLists.txt
++++ b/AttestationApp/test/CMakeLists.txt
+@@ -35,7 +35,6 @@ endif()
+ 
+ enable_testing()
+ 
+-hunter_add_package(GTest)
+ find_package(GTest CONFIG REQUIRED)
+ 
+ file(GLOB SOURCE_FILES *.cpp)
+diff --git a/AttestationCommons/CMakeLists.txt b/AttestationCommons/CMakeLists.txt
+index e6a7c4b..8ffb7bb 100644
+--- a/AttestationCommons/CMakeLists.txt
++++ b/AttestationCommons/CMakeLists.txt
+@@ -28,7 +28,6 @@ cmake_minimum_required(VERSION 3.12)
+ 
+ project(AttestationCommons CXX)
+ 
+-hunter_add_package(OpenSSL)
+ find_package(OpenSSL REQUIRED)
+ 
+ file(GLOB SOURCE_FILES src/*.cpp
+@@ -61,7 +60,6 @@ target_link_libraries(${PROJECT_NAME}Static PUBLIC
+ 
+ if(BUILD_LOGS)
+     message("Logging enabled.")
+-    hunter_add_package(spdlog)
+     find_package(spdlog CONFIG REQUIRED)
+     target_link_libraries(${PROJECT_NAME} PUBLIC
+             spdlog::spdlog_header_only
+diff --git a/AttestationCommons/test/CMakeLists.txt b/AttestationCommons/test/CMakeLists.txt
+index 0a45f04..4cd7e96 100644
+--- a/AttestationCommons/test/CMakeLists.txt
++++ b/AttestationCommons/test/CMakeLists.txt
+@@ -33,10 +33,8 @@ else()
+     add_compile_options($<$<CONFIG:Release>:-Og>)
+ endif()
+ 
+-hunter_add_package(OpenSSL)
+ find_package(OpenSSL REQUIRED)
+ 
+-hunter_add_package(GTest)
+ find_package(GTest CONFIG REQUIRED)
+ 
+ enable_testing()
+diff --git a/AttestationLibrary/CMakeLists.txt b/AttestationLibrary/CMakeLists.txt
+index 3463145..a704104 100644
+--- a/AttestationLibrary/CMakeLists.txt
++++ b/AttestationLibrary/CMakeLists.txt
+@@ -49,10 +49,8 @@ if(BUILD_DOCS)
+     install(DIRECTORY ${DOXYGEN_BUILD_DIR}/ DESTINATION doc)
+ endif()
+ 
+-hunter_add_package(OpenSSL)
+ find_package(OpenSSL REQUIRED)
+ 
+-hunter_add_package(spdlog)
+ find_package(spdlog CONFIG REQUIRED)
+ 
+ file(GLOB SOURCE_FILES src/*.cpp
+diff --git a/AttestationLibrary/test/IntegrationTests/CMakeLists.txt b/AttestationLibrary/test/IntegrationTests/CMakeLists.txt
+index 7c4ba28..525586a 100644
+--- a/AttestationLibrary/test/IntegrationTests/CMakeLists.txt
++++ b/AttestationLibrary/test/IntegrationTests/CMakeLists.txt
+@@ -28,10 +28,8 @@ cmake_minimum_required(VERSION 3.12)
+ 
+ set(SUBPROJECT_NAME ${PROJECT_NAME}_IT)
+ 
+-hunter_add_package(OpenSSL)
+ find_package(OpenSSL REQUIRED)
+ 
+-hunter_add_package(GTest)
+ find_package(GTest CONFIG REQUIRED)
+ 
+ enable_testing()
+diff --git a/AttestationLibrary/test/UnitTests/CMakeLists.txt b/AttestationLibrary/test/UnitTests/CMakeLists.txt
+index 2a69302..1131714 100644
+--- a/AttestationLibrary/test/UnitTests/CMakeLists.txt
++++ b/AttestationLibrary/test/UnitTests/CMakeLists.txt
+@@ -31,10 +31,8 @@ cmake_minimum_required(VERSION 3.12)
+ 
+ set(SUBPROJECT_NAME ${PROJECT_NAME}_UT)
+ 
+-hunter_add_package(OpenSSL)
+ find_package(OpenSSL REQUIRED)
+ 
+-hunter_add_package(GTest)
+ find_package(GTest CONFIG REQUIRED)
+ 
+ enable_testing()
+diff --git a/AttestationParsers/CMakeLists.txt b/AttestationParsers/CMakeLists.txt
+index 3fab7cb..ff14de5 100644
+--- a/AttestationParsers/CMakeLists.txt
++++ b/AttestationParsers/CMakeLists.txt
+@@ -49,10 +49,8 @@ if(BUILD_DOCS)
+     install(DIRECTORY ${DOXYGEN_BUILD_DIR}/ DESTINATION doc)
+ endif()
+ 
+-hunter_add_package(OpenSSL)
+ find_package(OpenSSL REQUIRED)
+ 
+-hunter_add_package(spdlog)
+ find_package(spdlog CONFIG REQUIRED)
+ 
+ file(GLOB SOURCE_FILES src/*.cpp
+diff --git a/AttestationParsers/test/IntegrationTests/CMakeLists.txt b/AttestationParsers/test/IntegrationTests/CMakeLists.txt
+index ef779e7..daf6cc3 100644
+--- a/AttestationParsers/test/IntegrationTests/CMakeLists.txt
++++ b/AttestationParsers/test/IntegrationTests/CMakeLists.txt
+@@ -28,10 +28,8 @@ cmake_minimum_required(VERSION 3.12)
+ 
+ set(SUBPROJECT_NAME ${PROJECT_NAME}_IT)
+ 
+-hunter_add_package(OpenSSL)
+ find_package(OpenSSL REQUIRED)
+ 
+-hunter_add_package(GTest)
+ find_package(GTest CONFIG REQUIRED)
+ 
+ enable_testing()
+diff --git a/AttestationParsers/test/UnitTests/CMakeLists.txt b/AttestationParsers/test/UnitTests/CMakeLists.txt
+index 8674292..53c546d 100644
+--- a/AttestationParsers/test/UnitTests/CMakeLists.txt
++++ b/AttestationParsers/test/UnitTests/CMakeLists.txt
+@@ -28,10 +28,8 @@ cmake_minimum_required(VERSION 3.12)
+ 
+ set(SUBPROJECT_NAME ${PROJECT_NAME}_UT)
+ 
+-hunter_add_package(OpenSSL)
+ find_package(OpenSSL REQUIRED)
+ 
+-hunter_add_package(GTest)
+ find_package(GTest CONFIG REQUIRED)
+ 
+ enable_testing()
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f783395..587fc8c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -145,39 +145,10 @@ endif ()
+ #required to run CMake on windows
+ set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
+ 
+-#hunter has to be imported before 'project()'
+-set(HUNTER_STATUS_DEBUG OFF) #set to 'ON' to see debug hunter logs
+-if(CMAKE_HOST_WIN32)
+-    set(HUNTER_ROOT "$ENV{USERPROFILE}/.cache/hunter" CACHE STRING "hunter root" FORCE)
+-    string(REPLACE "\\" "/" HUNTER_ROOT ${HUNTER_ROOT})
+-else()
+-    set(HUNTER_ROOT "$ENV{HOME}/.cache/hunter" CACHE STRING "hunter root" FORCE)
+-endif()
+-set(HUNTER_BINARY_DIR "${HUNTER_ROOT}")
+-#set(HUNTER_BINARY_DIR ${CMAKE_SOURCE_DIR}/ThirdParty/hunter) # in case of Hunter build problems
+-#If windows build fails, consider changing HUNTER_ROOT dir to shorter one, by either modifying its value or commenting out the line below:
+-#set(HUNTER_ROOT "${CMAKE_SOURCE_DIR}/ThirdParty/hunter" CACHE STRING "hunter root" FORCE)
+-
+-message("HUNTER_ROOT=${HUNTER_ROOT}")
+-message("HUNTER_BINARY_DIR=${HUNTER_BINARY_DIR}")
+-
+-option(HUNTER_NO_TOOLCHAIN_ID_RECALCULATION "No Toolchain-ID recalculation" ON)
+-option(HUNTER_KEEP_PACKAGE_SOURCES "Keep third party sources" ON)
+-
+-include("${CMAKE_CURRENT_LIST_DIR}/ThirdParty/hunter/HunterGate.cmake")
+-HunterGate(
+-		URL "https://github.com/cpp-pm/hunter/archive/v0.25.8.tar.gz"
+-		SHA1 "26c79d587883ec910bce168e25f6ac4595f97033"
+-		FILEPATH "${CMAKE_SOURCE_DIR}/ThirdParty/hunter/config.cmake"
+-)
+-
+ project(SgxEcdsaAttestation)
+ 
+ include(CTest)
+ 
+-message("HUNTER_GATE_ROOT: ${HUNTER_GATE_ROOT}")
+-file(COPY "${CMAKE_SOURCE_DIR}/ThirdParty/hunter/openssl/hunter.cmake" DESTINATION "${HUNTER_ROOT}/_Base/Download/Hunter/0.25.3/0dfbc2c/Unpacked/cmake/projects/OpenSSL/")
+-
+ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+ set(CMAKE_THREAD_LIBS_INIT "-lpthread") # Could NOT find Threads (missing: Threads_FOUND) related workarounds
+ set(CMAKE_HAVE_THREADS_LIBRARY 1)
+diff --git a/ThirdParty/CMakeLists.txt b/ThirdParty/CMakeLists.txt
+index 14853a9..baa0ec2 100644
+--- a/ThirdParty/CMakeLists.txt
++++ b/ThirdParty/CMakeLists.txt
+@@ -26,11 +26,6 @@
+ cmake_minimum_required(VERSION 3.12)
+ project(ThirdParty)
+ 
+-include(ExternalProject)
+-
+-hunter_add_package(OpenSSL)
+-hunter_add_package(GTest)
+-
+ add_library(rapidjson INTERFACE)
+ file(GLOB RAPIDJSON_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/rapidjson/include/rapidjson/*.h)
+ target_sources(rapidjson INTERFACE ${RAPIDJSON_SOURCE_FILES})
