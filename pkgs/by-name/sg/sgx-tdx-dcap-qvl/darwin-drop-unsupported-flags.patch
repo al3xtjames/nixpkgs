@@ -1,0 +1,78 @@
+diff --git a/AttestationCommons/CMakeLists.txt b/AttestationCommons/CMakeLists.txt
+index 8ffb7bb..d47ef69 100644
+--- a/AttestationCommons/CMakeLists.txt
++++ b/AttestationCommons/CMakeLists.txt
+@@ -113,7 +113,7 @@ if(MSVC)
+ 
+     target_compile_definitions(${PROJECT_NAME} PUBLIC _ATTESTATIONCOMMONS_EXPORTS)
+     target_compile_definitions(${PROJECT_NAME}Static PUBLIC ATTESTATIONCOMMONS_STATIC)
+-else()
++elif(NOT APPLE)
+     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,--exclude-libs,ALL") # hide external libs symbols in shared object, do not add it for Enclave as we use LDS file here
+ endif()
+ 
+diff --git a/AttestationLibrary/CMakeLists.txt b/AttestationLibrary/CMakeLists.txt
+index a704104..df4c954 100644
+--- a/AttestationLibrary/CMakeLists.txt
++++ b/AttestationLibrary/CMakeLists.txt
+@@ -99,7 +99,7 @@ target_link_libraries(${PROJECT_NAME}Static PRIVATE
+ if(MSVC)
+     target_compile_definitions(${PROJECT_NAME}Static PUBLIC ATTESTATIONLIBRARY_STATIC)
+     target_compile_definitions(${PROJECT_NAME} PUBLIC _ATTESTATIONLIBRARY_EXPORTS)
+-else()
++elif(NOT APPLE)
+     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,--exclude-libs,ALL") # hide external libs symbols in shared object, do not add it for Enclave as we use LDS file here
+ endif()
+ 
+diff --git a/AttestationParsers/CMakeLists.txt b/AttestationParsers/CMakeLists.txt
+index ff14de5..1e2f30f 100644
+--- a/AttestationParsers/CMakeLists.txt
++++ b/AttestationParsers/CMakeLists.txt
+@@ -131,7 +131,7 @@ if(MSVC)
+ 
+     target_compile_definitions(${PROJECT_NAME} PUBLIC _ATTESTATIONPARSERS_EXPORTS)
+     target_compile_definitions(${PROJECT_NAME}Static PUBLIC ATTESTATIONPARSERS_STATIC)
+-else()
++elif(NOT APPLE)
+     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,--exclude-libs,ALL") # hide external libs symbols in shared object, do not add it for Enclave as we use LDS file here
+ endif()
+ 
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 587fc8c..459c8e3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -177,7 +177,10 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU
+ 				)
+         # implicit-conversion: Checks for suspicious behavior of implicit conversions. Enables implicit-unsigned-integer-truncation, implicit-signed-integer-truncation, and implicit-integer-sign-change.
+ 		# nullability: Enables nullability-arg, nullability-assign, and nullability-return. While violating nullability does not have undefined behavior, it is often unintentional, so UBSan offers to catch it.
+-		set(CMAKE_EXE_LINKER_FLAGS_RELEASE_CLANG "-fsanitize=undefined,safe-stack,implicit-conversion,nullability")
++		set(CMAKE_EXE_LINKER_FLAGS_RELEASE_CLANG "-fsanitize=undefined,implicit-conversion,nullability")
++		if(NOT APPLE)
++			set(CMAKE_EXE_LINKER_FLAGS_RELEASE_CLANG "${CMAKE_EXE_LINKER_FLAGS_RELEASE_CLANG},safe-stack")
++		endif()
+ 	endif()
+ 	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+ 		if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.0")
+@@ -214,7 +217,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU
+ 			"-Wcast-qual"
+ 			"-Wredundant-decls"
+ 			)
+-	if(NOT DEFINED SANITIZE_FLAGS)
++	if(NOT DEFINED SANITIZE_FLAGS AND NOT APPLE)
+ 		set(SANITIZE_FLAGS
+ 				"-Wl,-z,relro" "-Wl,-z,now" #data relocation and protection (RELRO)
+ 				"-Wl,-z,noexecstack"       #stack execution protection
+@@ -234,9 +237,12 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU
+ 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+ 
+ 	set(COMMON_LINKER_FLAGS
+-			"-ldl" "-lrt" "-lpthread"
++			"-ldl" "-lpthread"
+ 			"${SANITIZE_FLAGS}"
+ 			)
++	if(NOT APPLE)
++		set(COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" "-lrt")
++	endif()
+ 
+ 	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${COMMON_LINKER_FLAGS}" "-pie" "${CMAKE_EXE_LINKER_FLAGS_RELEASE_CLANG}")
+ 	set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${COMMON_LINKER_FLAGS}")
