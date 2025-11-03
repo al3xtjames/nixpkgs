@@ -5,6 +5,7 @@
   makeWrapper,
   libaio,
   pkg-config,
+  cunit,
   python3,
   zlib,
   withGnuplot ? false,
@@ -25,6 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
   };
 
   buildInputs = [
+    cunit
     python3
     zlib
   ]
@@ -65,6 +67,16 @@ stdenv.mkDerivation (finalAttrs: {
 
   postInstall = ''
     wrapPythonProgramsIn "$out/bin" "$out $pythonPath"
+  '';
+
+  doCheck = true;
+
+  checkPhase = ''
+    runHook preCheck
+
+    ./unittests/unittest
+
+    runHook postCheck
   '';
 
   meta = {
