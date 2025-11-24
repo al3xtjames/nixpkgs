@@ -3,6 +3,7 @@
   stdenv,
   rustPlatform,
   fetchFromGitHub,
+  darwin,
   pkg-config,
   zstd,
   nix-update-script,
@@ -18,11 +19,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
     hash = "sha256-63Ub21JqjnKAhpIXpVUvM6sVa+xGaB15N+3NjrA+vzc=";
   };
 
-  # FIXME: we don't support dtrace probe generation on macOS until we have a dtrace build: https://github.com/NixOS/nixpkgs/pull/392918
-  patches = lib.optionals stdenv.hostPlatform.isDarwin [
-    ./no-dtrace-macos.patch
-  ];
-
   # Replace nextest-workspace-hack, otherwise we would still depend on aws-lc
   postPatch = ''
     cat > workspace-hack/Cargo.toml <<EOF
@@ -36,7 +32,12 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   cargoHash = "sha256-Qss1AxTNR68C0F/OT8qLHhKdxwzr+b/TeIIQQRfHdfQ=";
 
-  nativeBuildInputs = [ pkg-config ];
+  nativeBuildInputs = [
+    pkg-config
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isDarwin [
+    darwin.dtrace
+  ];
 
   buildInputs = [
     zstd
