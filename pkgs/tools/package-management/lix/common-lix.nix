@@ -91,10 +91,12 @@ assert lib.assertMsg (
     && (stdenv.hostPlatform.isLinux || stdenv.hostPlatform.isDarwin),
   aws-c-common,
   aws-sdk-cpp,
-  # FIXME support Darwin once https://github.com/NixOS/nixpkgs/pull/392918 lands
   withDtrace ?
-    lib.meta.availableOn stdenv.hostPlatform libsystemtap
-    && lib.meta.availableOn stdenv.buildPlatform systemtap-sdt,
+    (
+      lib.meta.availableOn stdenv.hostPlatform libsystemtap
+      && lib.meta.availableOn stdenv.buildPlatform systemtap-sdt
+    )
+    || stdenv.hostPlatform.isDarwin,
   # RISC-V support in progress https://github.com/seccomp/libseccomp/pull/50
   withLibseccomp ? lib.meta.availableOn stdenv.hostPlatform libseccomp,
   libseccomp,
@@ -258,7 +260,8 @@ stdenv.mkDerivation (finalAttrs: {
     mdbook
     doxygen
   ]
-  ++ lib.optionals (hasDtraceSupport && withDtrace) [ systemtap-sdt ]
+  ++ lib.optionals (hasDtraceSupport && withDtrace && !stdenv.hostPlatform.isDarwin) [ systemtap-sdt ]
+  ++ lib.optionals (hasDtraceSupport && withDtrace && stdenv.hostPlatform.isDarwin) [ darwin.dtrace ]
   ++ lib.optionals pastaFod [ passt ]
   ++ lib.optionals parseToYAML [ yq ]
   ++ lib.optionals usesCapnp [ capnproto ]
@@ -294,7 +297,7 @@ stdenv.mkDerivation (finalAttrs: {
   ++ lib.optionals (stdenv.hostPlatform.isx86_64) [ libcpuid ]
   ++ lib.optionals withLibseccomp [ libseccomp ]
   ++ lib.optionals withAWS [ aws-sdk-cpp ]
-  ++ lib.optionals (hasDtraceSupport && withDtrace) [ libsystemtap ];
+  ++ lib.optionals (hasDtraceSupport && withDtrace && !stdenv.hostPlatform.isDarwin) [ libsystemtap ];
 
   inherit cargoDeps;
 
