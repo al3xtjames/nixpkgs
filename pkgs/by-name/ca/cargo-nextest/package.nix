@@ -3,6 +3,7 @@
   stdenv,
   rustPlatform,
   fetchFromGitHub,
+  darwin,
   nix-update-script,
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
@@ -16,11 +17,6 @@ rustPlatform.buildRustPackage (finalAttrs: {
     hash = "sha256-2ndrHZ1pmu1oBZGlq5pyv0vhSEUf23gNRyyenNw0fdk=";
   };
 
-  # FIXME: we don't support dtrace probe generation on macOS until we have a dtrace build: https://github.com/NixOS/nixpkgs/pull/392918
-  patches = lib.optionals stdenv.hostPlatform.isDarwin [
-    ./no-dtrace-macos.patch
-  ];
-
   cargoHash = "sha256-ZW0/JQ9RECxfDn479ww4bO4ixoMGaM+GtGUOCWy2Cyg=";
 
   cargoBuildFlags = [
@@ -30,6 +26,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
   cargoTestFlags = [
     "-p"
     "cargo-nextest"
+  ];
+
+  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
+    darwin.dtrace
   ];
 
   passthru.updateScript = nix-update-script {
