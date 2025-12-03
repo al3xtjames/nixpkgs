@@ -24,6 +24,7 @@ mkAppleDerivation {
 
   patches = [
     ./0001-Patches-for-building-externally-to-Apple.patch
+    ./0002-Fix-libdtrace-i386-compilation.patch
   ];
 
   meta = {
