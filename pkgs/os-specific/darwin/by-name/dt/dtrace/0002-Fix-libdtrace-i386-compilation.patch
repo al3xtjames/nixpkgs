@@ -1,0 +1,13 @@
+diff --git a/lib/libdtrace/i386/dt_isadep.c b/lib/libdtrace/i386/dt_isadep.c
+index 6f64865..afd6c82 100644
+--- a/lib/libdtrace/i386/dt_isadep.c
++++ b/lib/libdtrace/i386/dt_isadep.c
+@@ -35,7 +35,7 @@
+ #include <dt_impl.h>
+ #include <dt_pid.h>
+ 
+-#include <dis_tables.h>
++#include "dis_tables.h"
+ 
+ #define	DT_POPL_EBP	0x5d
+ #define	DT_RET		0xc3
