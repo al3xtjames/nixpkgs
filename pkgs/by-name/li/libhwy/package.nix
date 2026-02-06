@@ -6,6 +6,7 @@
   gtest,
   fetchFromGitHub,
   fetchpatch,
+  nix-update-script,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -84,6 +85,8 @@ stdenv.mkDerivation (finalAttrs: {
     ];
 
   doCheck = true;
+
+  passthru.updateScript = nix-update-script { };
 
   meta = {
     description = "Performance-portable, length-agnostic SIMD with runtime dispatch";
