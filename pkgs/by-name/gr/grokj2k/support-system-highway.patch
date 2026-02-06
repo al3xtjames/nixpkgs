@@ -1,0 +1,48 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index beec165..b0d5f68 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -148,6 +148,7 @@ option(GRK_BUILD_LIBPNG "Build libpng library" ON)
+ option(GRK_BUILD_LIBTIFF "Build libtiff library" ON)
+ option(GRK_BUILD_LCMS2 "Build lcms2 library" ON)
+ option(GRK_BUILD_JPEG "Build jpeg library" ON)
++option(GRK_BUILD_HIGHWAY "Build highway library" ON)
+ add_subdirectory(thirdparty)
+ 
+ # Build Library
+diff --git a/src/lib/core/CMakeLists.txt b/src/lib/core/CMakeLists.txt
+index fdcf0bb..4a77255 100644
+--- a/src/lib/core/CMakeLists.txt
++++ b/src/lib/core/CMakeLists.txt
+@@ -174,13 +174,24 @@ if (GRK_BUILD_PLUGIN_LOADER)
+     add_definitions(-DGRK_BUILD_PLUGIN_LOADER)
+ endif()
+ 
+-set(HWY_ENABLE_EXAMPLES OFF CACHE BOOL "Enable HWY examples")
+-set(HWY_ENABLE_CONTRIB OFF CACHE BOOL "Enable HWY contrib")
+-set(HWY_ENABLE_INSTALL OFF CACHE BOOL "Enable HWY install")
+-set(HWY_FORCE_STATIC_LIBS ON CACHE BOOL "Enable HWY force static libs")
+-set(INSTALL_GTEST OFF CACHE BOOL "Install GTest")
+-set(HWY_ENABLE_TESTS OFF CACHE BOOL "Disable tests")
+-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/highway EXCLUDE_FROM_ALL)
++# Try to find Highway
++if(GRK_BUILD_HIGHWAY)
++  message(STATUS "Highway will be built")
++  set(HWY_ENABLE_EXAMPLES OFF CACHE BOOL "Enable HWY examples")
++  set(HWY_ENABLE_CONTRIB OFF CACHE BOOL "Enable HWY contrib")
++  set(HWY_ENABLE_INSTALL OFF CACHE BOOL "Enable HWY install")
++  set(HWY_FORCE_STATIC_LIBS ON CACHE BOOL "Enable HWY force static libs")
++  set(INSTALL_GTEST OFF CACHE BOOL "Install GTest")
++  set(HWY_ENABLE_TESTS OFF CACHE BOOL "Disable tests")
++  add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/highway EXCLUDE_FROM_ALL)
++else(GRK_BUILD_HIGHWAY)
++  find_package(HWY)
++  if(HWY_FOUND)
++    message(STATUS "The system seems to have Highway available, it will be used")
++  else(HWY_FOUND)
++    message(FATAL_ERROR "Highway not found, please activate GRK_BUILD_HIGHWAY")
++  endif(HWY_FOUND)
++endif(GRK_BUILD_HIGHWAY)
+ 
+ add_library(${GROK_CORE_NAME} ${GROK_LIBRARY_SRCS})
+ set_target_properties(${GROK_CORE_NAME} PROPERTIES ${GROK_LIBRARY_PROPERTIES})
