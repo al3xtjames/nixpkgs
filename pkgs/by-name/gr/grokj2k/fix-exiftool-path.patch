@@ -1,0 +1,34 @@
+diff --git a/src/lib/codec/common/exif.cpp b/src/lib/codec/common/exif.cpp
+index 551046c..2db3f19 100644
+--- a/src/lib/codec/common/exif.cpp
++++ b/src/lib/codec/common/exif.cpp
+@@ -67,17 +67,18 @@ public:
+         throw std::runtime_error("Unable to run Perl interpreter used to extract exif tags");
+       }
+       std::string script{R"x(
+-	                use strict;
+-					use warnings;
+-					use Image::ExifTool;
+-					sub transfer {
+-						my $srcFile = $_[0];
+-						my $outFile = $_[1];
+-						my $exifTool = new Image::ExifTool;
+-						my $info = $exifTool->SetNewValuesFromFile($srcFile, 'all:all');
+-						my $result = $exifTool->WriteInfo($outFile);
+-					}
+-			    )x"};
++                    use strict;
++                    use warnings;
++                    use lib "@exiftool@";
++                    use Image::ExifTool;
++                    sub transfer {
++                        my $srcFile = $_[0];
++                        my $outFile = $_[1];
++                        my $exifTool = new Image::ExifTool;
++                        my $info = $exifTool->SetNewValuesFromFile($srcFile, 'all:all');
++                        my $result = $exifTool->WriteInfo($outFile);
++                    }
++                )x"};
+       if(!eval_pv(script.c_str(), TRUE))
+       {
+         dealloc();
