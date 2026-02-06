@@ -83,8 +83,7 @@ stdenv.mkDerivation (finalAttrs: {
       "-DHWY_CMAKE_RVV=OFF"
     ];
 
-  # hydra's darwin machines run into https://github.com/libjxl/libjxl/issues/408
-  doCheck = !stdenv.hostPlatform.isDarwin;
+  doCheck = true;
 
   meta = {
     description = "Performance-portable, length-agnostic SIMD with runtime dispatch";
