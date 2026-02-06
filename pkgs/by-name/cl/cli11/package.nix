@@ -6,6 +6,7 @@
   catch2,
   cmake,
   python3,
+  nix-update-script,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -29,6 +30,8 @@ stdenv.mkDerivation (finalAttrs: {
 
   doCheck = true;
   strictDeps = true;
+
+  passthru.updateScript = nix-update-script { };
 
   meta = {
     description = "Command line parser for C++11";
