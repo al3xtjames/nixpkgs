@@ -36,6 +36,8 @@ stdenv.mkDerivation (finalAttrs: {
   meta = {
     description = "Command line parser for C++11";
     homepage = "https://github.com/CLIUtils/CLI11";
+    downloadPage = "https://github.com/CLIUtils/CLI11/releases/tag/v${finalAttrs.version}";
+    changelog  = "https://github.com/CLIUtils/CLI11/blob/main/CHANGELOG.md";
     platforms = lib.platforms.unix;
     maintainers = [ ];
     license = lib.licenses.bsd3;
