@@ -1,0 +1,38 @@
+diff --git a/src/lib/codec/libgrokj2kcodec.pc.cmake.in b/src/lib/codec/libgrokj2kcodec.pc.cmake.in
+index beafef2..d9fe3d2 100644
+--- a/src/lib/codec/libgrokj2kcodec.pc.cmake.in
++++ b/src/lib/codec/libgrokj2kcodec.pc.cmake.in
+@@ -1,9 +1,9 @@
+ prefix=@CMAKE_INSTALL_PREFIX@
+-bindir=${prefix}/@CMAKE_INSTALL_BINDIR@
+-mandir=${prefix}/@CMAKE_INSTALL_MANDIR@
+-docdir=${prefix}/@CMAKE_INSTALL_DOCDIR@
+-libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+-includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@/@GROK_INSTALL_SUBDIR@
++bindir=@CMAKE_INSTALL_BINDIR@
++mandir=@CMAKE_INSTALL_MANDIR@
++docdir=@CMAKE_INSTALL_DOCDIR@
++libdir=@CMAKE_INSTALL_LIBDIR@
++includedir=@CMAKE_INSTALL_INCLUDEDIR@/@GROK_INSTALL_SUBDIR@
+ 
+ Name: grokj2kcodec
+ Description: Full JPEG 2000 codec (Part 1)
+diff --git a/src/lib/core/libgrokj2k.pc.cmake.in b/src/lib/core/libgrokj2k.pc.cmake.in
+index 3cd0f71..8f436de 100644
+--- a/src/lib/core/libgrokj2k.pc.cmake.in
++++ b/src/lib/core/libgrokj2k.pc.cmake.in
+@@ -1,9 +1,9 @@
+ prefix=@CMAKE_INSTALL_PREFIX@
+-bindir=${prefix}/@CMAKE_INSTALL_BINDIR@
+-mandir=${prefix}/@CMAKE_INSTALL_MANDIR@
+-docdir=${prefix}/@CMAKE_INSTALL_DOCDIR@
+-libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+-includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@/@GROK_INSTALL_SUBDIR@
++bindir=@CMAKE_INSTALL_BINDIR@
++mandir=@CMAKE_INSTALL_MANDIR@
++docdir=@CMAKE_INSTALL_DOCDIR@
++libdir=@CMAKE_INSTALL_LIBDIR@
++includedir=@CMAKE_INSTALL_INCLUDEDIR@/@GROK_INSTALL_SUBDIR@
+ 
+ Name: grokj2k
+ Description: Core JPEG 2000 codec (Part 1)
