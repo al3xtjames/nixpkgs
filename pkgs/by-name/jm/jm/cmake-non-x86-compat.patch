@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6a42c55..98f8531 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -96,7 +96,7 @@ endif()
+ bb_enable_warnings( msvc warnings-as-errors "/wd4996 /wd5105 /wd5103" )
+ 
+ # enable sse4.1 build for all source files for gcc and clang
+-if( UNIX OR MINGW )
++if(( UNIX OR MINGW ) AND CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "^(i[3-6]86|x86_64)$" )
+   add_compile_options( "-msse4.1" )
+ endif()
+ 
