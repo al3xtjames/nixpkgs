@@ -1,0 +1,25 @@
+diff --git a/lix/lix.pc.in b/lix/lix.pc.in
+index 04ec1705d..9019382b5 100644
+--- a/lix/lix.pc.in
++++ b/lix/lix.pc.in
+@@ -7,6 +7,6 @@ Description: Lix Package Manager (libraries)
+ Version: @PACKAGE_VERSION@
+ # dependencies on boost, libarchive, nlohmann_json are omitted since they are optional (only required by some headers)
+ Requires: lix-base kj-async @BOEHM_IF_FOUND@
+-Requires.private: @AWS_SDK_IF_FOUND@ @BOEHM_IF_FOUND@ libeditline lowdown ncurses libbrotlidec libbrotlienc libcpuid libarchive libcrypto capnp-rpc libcurl libseccomp sqlite3
++Requires.private: @AWS_SDK_IF_FOUND@ @BOEHM_IF_FOUND@ @CPUID_IF_FOUND@ @SECCOMP_IF_FOUND@ libeditline lowdown ncurses libbrotlidec libbrotlienc libarchive libcrypto capnp-rpc libcurl sqlite3
+ Cflags: -I${includedir}
+ Libs: -L${libdir} -lrust_monocrate -llix
+diff --git a/meson.build b/meson.build
+index 171f75695..a51eef591 100644
+--- a/meson.build
++++ b/meson.build
+@@ -601,6 +601,8 @@ foreach pkgconf : [ 'lix-base.pc', 'lix.pc' ]
+       'PACKAGE_VERSION' : meson.project_version(),
+       'AWS_SDK_IF_FOUND' : aws_sdk.found() ? 'aws-cpp-sdk-core aws-cpp-sdk-s3 aws-cpp-sdk-transfer' : '',
+       'BOEHM_IF_FOUND' : boehm.found() ? 'bdw-gc' : '',
++      'CPUID_IF_FOUND' : cpuid.found() ? 'libcpuid' : '',
++      'SECCOMP_IF_FOUND' : seccomp.found() ? 'libseccomp' : '',
+     },
+   )
+ endforeach

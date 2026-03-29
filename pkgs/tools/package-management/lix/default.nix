@@ -234,6 +234,7 @@ lib.makeExtensible (
 
         patches = [
           lixFunctional2TimeoutPatch
+          ./limit-optional-pkgconfig-deps.patch
         ];
       };
     };
