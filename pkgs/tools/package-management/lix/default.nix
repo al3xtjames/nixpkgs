@@ -226,6 +226,8 @@ lib.makeExtensible (
           inherit src;
           hash = "sha256-a5XtutX+NS4wOqxeqbscWZMs99teKick5+cQfbCRGxQ=";
         };
+
+        patches = [ ./limit-optional-pkgconfig-deps.patch ];
       };
     };
 
