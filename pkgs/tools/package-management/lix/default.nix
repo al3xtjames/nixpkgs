@@ -184,6 +184,7 @@ lib.makeExtensible (
       lix-args = (import ./2.95.nix { inherit fetchFromGitea rustPlatform nix-update-script; }) // {
         patches = [
           lixFunctional2TimeoutPatch
+          ./limit-optional-pkgconfig-deps.patch
         ];
       };
     };
