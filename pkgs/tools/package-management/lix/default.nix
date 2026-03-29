@@ -196,6 +196,7 @@ lib.makeExtensible (
         patches = [
           lixFunctional2TimeoutPatch
           ./darwin-libcxx-nodiscard.patch
+          ./limit-optional-pkgconfig-deps.patch
         ];
       };
     };
