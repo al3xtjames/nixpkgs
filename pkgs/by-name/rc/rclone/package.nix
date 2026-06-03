@@ -3,6 +3,7 @@
   stdenv,
   buildGoModule,
   fetchFromGitHub,
+  fetchpatch,
   buildPackages,
   installShellFiles,
   versionCheckHook,
@@ -14,6 +15,12 @@
   nix-update-script,
 }:
 
+let
+  cgofuseDarwinPatch = fetchpatch {
+    url = "https://github.com/al3xtjames/cgofuse/commit/7d19abfe94d6ae68d54d994e133298ac37651a5e.patch";
+    hash = "sha256-T+DIYzzD5pRqQCjmAkDRSH+FraXalrzOR7hwPRy5RTk=";
+  };
+in
 buildGoModule (finalAttrs: {
   pname = "rclone";
   version = "1.76.0";
@@ -30,7 +37,15 @@ buildGoModule (finalAttrs: {
     hash = "sha256-QHmiqASFr4ZJQE+QsSXEbIlgNfsw8iOVvBLdl57bbDQ=";
   };
 
-  vendorHash = "sha256-+08M76VSLYFZjblRMFXg925k0qOzW25By0YyeIOLNo4=";
+  vendorHash = "sha256-X247y83Iqz6jwLBFzQH1liPKtUSodYQaIJgi25fdpyY=";
+
+  overrideModAttrs = _: {
+    postBuild = ''
+      patch -p1 -i ${cgofuseDarwinPatch} -d vendor/github.com/winfsp/cgofuse
+      substituteInPlace vendor/github.com/winfsp/cgofuse/fuse/host_cgo.go \
+        --replace-fail "fuse.h" "fuse3/fuse.h"
+    '';
+  };
 
   subPackages = [ "." ];
 
@@ -39,15 +54,12 @@ buildGoModule (finalAttrs: {
     makeWrapper
   ];
 
-  buildInputs = lib.optional enableCmount (
-    # cgofuse uses the fuse2 header locations on darwin
-    if stdenv.hostPlatform.isDarwin then (macfuse-stubs.override { isFuse3 = false; }) else fuse3
-  );
+  buildInputs = lib.optional enableCmount fuse3;
 
   tags = [
+    "fuse3"
     "noselfupdate"
   ]
-  ++ lib.optionals (!stdenv.hostPlatform.isDarwin) [ "fuse3" ]
   ++ lib.optionals enableCmount [ "cmount" ];
 
   ldflags = [
@@ -55,11 +67,6 @@ buildGoModule (finalAttrs: {
     "-w"
     "-X github.com/rclone/rclone/fs.Version=${finalAttrs.src.tag}"
   ];
-
-  postConfigure = lib.optionalString (!stdenv.hostPlatform.isDarwin) ''
-    substituteInPlace vendor/github.com/winfsp/cgofuse/fuse/host_cgo.go \
-        --replace-fail "fuse.h" "fuse3/fuse.h"
-  '';
 
   postInstall =
     let
