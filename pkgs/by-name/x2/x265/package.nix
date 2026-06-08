@@ -28,6 +28,8 @@
   # NEON support is always enabled for aarch64
   # this flag is only needed for armv7.
   neonSupport ? false, # force enable the NEON fpu support for arm v7 CPUs
+
+  versionCheckHook,
 }:
 
 let
@@ -195,6 +197,10 @@ in {
   + lib.optionalString stdenv.hostPlatform.isMinGW ''
     ln -s $out/bin/*.dll $out/lib
   '';
+
+  doInstallCheck = true;
+
+  nativeInstallCheckInputs = [ versionCheckHook ];
 
   __structuredAttrs = true;
 
