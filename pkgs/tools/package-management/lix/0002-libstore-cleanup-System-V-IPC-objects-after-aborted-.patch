@@ -1,0 +1,48 @@
+From e3d56794c742e696a5fb0a219dc3935f34aac19a Mon Sep 17 00:00:00 2001
+From: Alex James <git@alextjam.es>
+Date: Thu, 16 Jul 2026 19:59:12 -0700
+Subject: [PATCH 2/2] libstore: cleanup System V IPC objects after aborted
+ builds on Darwin
+
+Change-Id: Id0569e31d456223e390a102a72d8176f769a9203
+---
+ lix/libstore/platform/darwin.cc | 9 +++++++++
+ lix/libstore/platform/darwin.hh | 2 ++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/lix/libstore/platform/darwin.cc b/lix/libstore/platform/darwin.cc
+index c64327996..2f3af13a4 100644
+--- a/lix/libstore/platform/darwin.cc
++++ b/lix/libstore/platform/darwin.cc
+@@ -510,6 +510,15 @@ void DarwinLocalDerivationGoal::killSandbox(bool getStats)
+     }
+ }
+ 
++DarwinLocalDerivationGoal::~DarwinLocalDerivationGoal()
++{
++    // Clean up System V IPC objects after aborted builds
++    if (buildUser) {
++        auto uid = buildUser->getUID();
++        cleanupSysVIPCForUser(uid);
++    }
++}
++
+ void registerLocalStore() {
+     StoreImplementations::add<DarwinLocalStore, LocalStoreConfig>();
+ }
+diff --git a/lix/libstore/platform/darwin.hh b/lix/libstore/platform/darwin.hh
+index b2ebe384c..799071daf 100644
+--- a/lix/libstore/platform/darwin.hh
++++ b/lix/libstore/platform/darwin.hh
+@@ -36,6 +36,8 @@ class DarwinLocalDerivationGoal : public LocalDerivationGoal
+ public:
+     using LocalDerivationGoal::LocalDerivationGoal;
+ 
++    ~DarwinLocalDerivationGoal();
++
+ private:
+     /**
+      * no-op. sandbox profiles are generated in fillBuilderConfig, we only need
+-- 
+2.54.0
+
