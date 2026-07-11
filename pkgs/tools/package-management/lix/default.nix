@@ -197,6 +197,8 @@ lib.makeExtensible (
           lixFunctional2TimeoutPatch
           ./darwin-libcxx-nodiscard.patch
           ./limit-optional-pkgconfig-deps.patch
+          ./0001-Fix-macOS-IPC-cleanup-using-sysctl-shared-memory-seg.patch
+          ./0002-libstore-cleanup-System-V-IPC-objects-after-aborted-.patch
         ];
       };
     };
