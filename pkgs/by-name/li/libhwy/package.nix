@@ -1,6 +1,7 @@
 {
   lib,
   stdenv,
+  llvmPackages_22,
   cmake,
   ninja,
   gtest,
@@ -8,7 +9,13 @@
   nix-update-script,
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+let
+  # Use Clang 22 to avoid a compilation issue with BF16 on AArch64:
+  # https://github.com/llvm/llvm-project/issues/159772
+  stdenv' =
+    if stdenv.cc.isClang && stdenv.hostPlatform.isAarch64 then llvmPackages_22.stdenv else stdenv;
+in
+stdenv'.mkDerivation (finalAttrs: {
   pname = "libhwy";
   version = "1.4.0";
 
