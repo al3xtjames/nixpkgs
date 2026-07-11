@@ -227,7 +227,11 @@ lib.makeExtensible (
           hash = "sha256-a5XtutX+NS4wOqxeqbscWZMs99teKick5+cQfbCRGxQ=";
         };
 
-        patches = [ ./limit-optional-pkgconfig-deps.patch ];
+        patches = [
+          ./limit-optional-pkgconfig-deps.patch
+          ./0001-Fix-macOS-IPC-cleanup-using-sysctl-shared-memory-seg.patch
+          ./0002-libstore-cleanup-System-V-IPC-objects-after-aborted-.patch
+        ];
       };
     };
 
