@@ -24,6 +24,9 @@ let
     "i686-cygwin"
     "x86_64-cygwin"
 
+    # Darwin (unsupported)
+    "x86_64-darwin"
+
     # FreeBSD
     "i686-freebsd"
     "x86_64-freebsd"
