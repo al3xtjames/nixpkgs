@@ -20,6 +20,7 @@
   # Other platforms with sufficient support in stdenv which is not formally
   # mandated by their platform tier.
   "aarch64-darwin"
+  "x86_64-darwin"
   # "armv5tel-linux" is excluded because it is not bootstrapped
   "powerpc64le-linux"
   "riscv64-linux"
