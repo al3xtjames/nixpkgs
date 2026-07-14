@@ -36,6 +36,7 @@
     "aarch64-linux",
     "i686-cygwin",
     "x86_64-cygwin",
+    "x86_64-darwin",
     "i686-freebsd",
     "x86_64-freebsd",
     "aarch64-freebsd",
@@ -158,7 +159,8 @@
     "x86_64-cygwin"
   ],
   "darwin": [
-    "aarch64-darwin"
+    "aarch64-darwin",
+    "x86_64-darwin"
   ],
   "embedded": [
     "aarch64_be-none",
@@ -268,6 +270,7 @@
     "aarch64-linux",
     "i686-cygwin",
     "x86_64-cygwin",
+    "x86_64-darwin",
     "i686-freebsd",
     "x86_64-freebsd",
     "aarch64-freebsd",
@@ -424,6 +427,7 @@
     "aarch64-linux",
     "i686-cygwin",
     "x86_64-cygwin",
+    "x86_64-darwin",
     "i686-freebsd",
     "x86_64-freebsd",
     "aarch64-freebsd",
@@ -481,6 +485,7 @@
     "x86_64-linux",
     "i686-cygwin",
     "x86_64-cygwin",
+    "x86_64-darwin",
     "i686-freebsd",
     "x86_64-freebsd",
     "i686-genode",
@@ -501,6 +506,7 @@
   "x86_64": [
     "x86_64-linux",
     "x86_64-cygwin",
+    "x86_64-darwin",
     "x86_64-freebsd",
     "x86_64-genode",
     "x86_64-solaris",
