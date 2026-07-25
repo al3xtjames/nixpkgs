@@ -78,10 +78,6 @@ buildPythonPackage (finalAttrs: {
     # The top directory /build matches black's DEFAULT_EXCLUDE regex.
     # Make /build the project root for black tests to avoid excluding files.
     touch ../.git
-  ''
-  + lib.optionalString stdenv.hostPlatform.isDarwin ''
-    # Work around https://github.com/psf/black/issues/2105
-    export TMPDIR="/tmp"
   '';
 
   disabledTests = [
