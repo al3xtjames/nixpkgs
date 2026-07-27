@@ -484,7 +484,7 @@ let
     allowDeprecatedx86_64Darwin = mkOption {
       # `true` does nothing; it silenced the warning in 26.05.
       type = types.either types.bool (types.enum [ "force" ]);
-      default = false;
+      default = "force";
       description = ''
         Set to `"force"` to allow evaluating for the `x86_64-darwin`
         platform despite its deprecation in Nixpkgs 26.11.
