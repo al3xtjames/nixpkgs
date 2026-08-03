@@ -81,6 +81,7 @@ rec {
         # https://doc.rust-lang.org/nightly/rustc/platform-support.html
         "aarch64-darwin"
         "i686-freebsd"
+        "x86_64-darwin"
         "x86_64-freebsd"
         "x86_64-solaris"
         "aarch64-linux"
