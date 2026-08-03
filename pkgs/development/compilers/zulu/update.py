@@ -20,6 +20,7 @@ SOURCES = Path(__file__).parent / "sources"
 PLATFORMS = {
     "x86_64-linux": ("linux", "x64", "glibc"),
     "aarch64-linux": ("linux", "aarch64", "glibc"),
+    "x86_64-darwin": ("macos", "x64", None),
     "aarch64-darwin": ("macos", "aarch64", None),
 }
 
