@@ -25,6 +25,11 @@ stdenvNoCC.mkDerivation (finalAttrs: {
             arch = "arm64";
             hash = "sha256-vCGKhUyF2eHJVJapayYoe7ZgVrlWiLkPkdBPpi7SG3U=";
           };
+
+          x86_64-darwin = {
+            arch = "x86_64";
+            hash = "sha256-m8od4ftuoZyeC517fIUkkCDJ7WWp1DTC70CJai8zlfk=";
+          };
         }
         .${stdenvNoCC.hostPlatform.system}
           or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
@@ -86,6 +91,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     ];
     platforms = [
       "aarch64-darwin"
+      "x86_64-darwin"
     ];
   };
 })
