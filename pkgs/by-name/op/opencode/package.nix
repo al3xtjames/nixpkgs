@@ -237,6 +237,7 @@ stdenv.mkDerivation (finalAttrs: {
       "aarch64-linux"
       "x86_64-linux"
       "aarch64-darwin"
+      "x86_64-darwin"
     ];
     mainProgram = "opencode";
   };
