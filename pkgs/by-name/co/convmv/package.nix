@@ -12,9 +12,8 @@ stdenv.mkDerivation (finalAttrs: {
   version = "2.06";
 
   outputs = [
-    "bin"
-    "man"
     "out"
+    "man"
   ];
 
   src = fetchzip {
@@ -37,14 +36,14 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   makeFlags = [
-    "PREFIX=${placeholder "bin"}"
+    "PREFIX=${placeholder "out"}"
     "MANDIR=${placeholder "man"}/share/man"
   ];
 
   checkTarget = "test";
 
-  # testsuite.tar contains filenames that aren't valid UTF-8. Extraction of
-  # testsuite.tar will fail as APFS enforces that filenames are valid UTF-8.
+  # testsuite.tar contains filenames that aren't valid UTF-8. Extraction will
+  # fail on filesystems that enforce valid UTF-8 filenames (such as APFS).
   doCheck = !stdenv.hostPlatform.isDarwin;
 
   prePatch =
@@ -58,7 +57,7 @@ stdenv.mkDerivation (finalAttrs: {
   dontPatchShebangs = true;
 
   postFixup = ''
-    wrapProgram "$bin/bin/convmv" --prefix PERL5LIB : "$PERL5LIB"
+    wrapProgram "$out/bin/convmv" --prefix PERL5LIB : "$PERL5LIB"
   '';
 
   meta = {
