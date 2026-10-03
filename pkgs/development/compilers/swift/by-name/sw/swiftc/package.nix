@@ -220,12 +220,6 @@ stdenv.mkDerivation (finalAttrs: {
     # Make sure Swift uses the external macro plugin server built with the compiler.
     substituteInPlace lib/Driver/DarwinToolChains.cpp \
       --replace-fail 'basePath, "usr", "bin", "swift-plugin-server"' "\"$out/bin/swift-plugin-server\""
-
-    # Only build the runtime for aarch64-darwin. Universal builds aren’t really supported in nixpkgs,
-    # and the dylibs in the SDK aren’t built as universal. Use `grep` to assert the change was made.
-    sed -i cmake/modules/SwiftConfigureSDK.cmake \
-      -e 's/^\( *\)remove_sdk_unsupported_archs(.*$/\1set(SWIFT_SDK_''${prefix}_ARCHITECTURES "arm64")/'
-    grep -q 'set(SWIFT_SDK_''${prefix}_ARCHITECTURES "arm64")' cmake/modules/SwiftConfigureSDK.cmake
   '';
 
   dontFixCmake = true;
@@ -249,6 +243,9 @@ stdenv.mkDerivation (finalAttrs: {
     (lib.cmakeFeature "cmark-gfm_DIR" "${swift-cmark.out}/lib/cmake")
     # Swift defaults to 10.13, which is too old. Set the deployment target to the minimum supported in nixpkgs.
     (lib.cmakeFeature "SWIFT_DARWIN_DEPLOYMENT_VERSION_OSX" stdenv.hostPlatform.darwinMinVersion)
+    # Only build the runtime for the host architecture. Universal builds aren’t really supported in nixpkgs,
+    # and the dylibs in the SDK aren’t built as universal.
+    (lib.cmakeFeature "SWIFT_DARWIN_SUPPORTED_ARCHS" stdenv.hostPlatform.swift.arch)
     (lib.cmakeFeature "SWIFT_HOST_TRIPLE" stdenv.hostPlatform.swift.triple)
     # Tests should only be built when building a regular compiler. The bootstrap compiler is not functional enough.
     (lib.cmakeBool "SWIFT_INCLUDE_TESTS" doCheck)
