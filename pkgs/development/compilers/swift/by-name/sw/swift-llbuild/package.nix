@@ -53,6 +53,11 @@ stdenv.mkDerivation (finalAttrs: {
     grep -rl 'curses)' -Z | while IFS= read -d "" file; do
       substituteInPlace "$file" --replace-fail 'curses)' 'ncurses)'
     done
+  ''
+  + lib.optionalString stdenv.hostPlatform.isDarwin ''
+    # Replace the hardcoded 10.10 deployment target, which breaks linking on x86_64-darwin.
+    substituteInPlace products/llbuildSwift/CMakeLists.txt \
+      --replace-fail 'macosx10.10' "macosx${stdenv.hostPlatform.darwinMinVersion}"
   '';
 
   strictDeps = true;
