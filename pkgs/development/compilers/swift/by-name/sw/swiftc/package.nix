@@ -384,8 +384,9 @@ stdenv.mkDerivation (finalAttrs: {
       done < <(find "$out" -type f -print0)
     ''
     # Swift installs some back-deployment and stdlib components as part of the compiler component. Delete them.
+    # Keep the legacy layout files as they are still used on x86_64-darwin.
     + lib.optionalString (stdlib != null) ''
-      rm -rf "''${!outputLib}/lib/swift/${swiftPlatform}"
+      find "''${!outputLib}/lib/swift/${swiftPlatform}" -mindepth 1 -not -name 'layouts-*.yaml' -delete
       rm -rf "''${!outputLib}/lib/swift-6.2"
       rm -rf "''${!outputLib}/lib/swift_static"
     ''
