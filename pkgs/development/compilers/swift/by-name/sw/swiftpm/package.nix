@@ -160,6 +160,12 @@ stdenv.mkDerivation (finalAttrs: {
       done
     '';
 
+  env = lib.optionalAttrs (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isx86_64) {
+    # Ensure that there is enough space for the `fixDarwinDylibNames` hook to
+    # update the install names of the output dylibs.
+    NIX_LDFLAGS = "-headerpad_max_install_names";
+  };
+
   passthru.tests = lib.packagesFromDirectoryRecursive {
     inherit callPackage;
     directory = ./tests;
