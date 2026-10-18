@@ -31,11 +31,10 @@
   versionCheckHook,
   writeText,
   installShellCompletions ? stdenv.buildPlatform.canExecute stdenv.hostPlatform,
+  voiceSupport ? stdenv.hostPlatform.isDarwin || (stdenv.hostPlatform.isLinux && stdenv.hostPlatform.isGnu),
   _experimental-update-script-combinators,
 }:
 let
-  supportsVoice =
-    stdenv.hostPlatform.isDarwin || (stdenv.hostPlatform.isLinux && stdenv.hostPlatform.isGnu);
   voiceRuntimeRoots = [
     (lib.getLib gst_all_1.gstreamer)
     (lib.getLib gst_all_1.gst-plugins-base)
@@ -112,7 +111,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     "--package"
     "codex-code-mode-host"
   ]
-  ++ lib.optionals supportsVoice [
+  ++ lib.optionals voiceSupport [
     "--package"
     "codex-voice-host"
   ];
@@ -122,7 +121,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     "--package"
     "codex-code-mode-host"
   ]
-  ++ lib.optionals supportsVoice [
+  ++ lib.optionals voiceSupport [
     "--package"
     "codex-voice-host"
   ];
@@ -134,11 +133,11 @@ rustPlatform.buildRustPackage (finalAttrs: {
       packageLinkRoots = lib.concatStringsSep ":" (
         [ (toString (lib.getBin ripgrep)) ]
         ++ lib.optionals stdenv.hostPlatform.isLinux [ (toString (lib.getBin bubblewrap)) ]
-        ++ lib.optionals supportsVoice (map toString voiceRuntimeRoots)
+        ++ lib.optionals voiceSupport (map toString voiceRuntimeRoots)
       );
     })
   ]
-  ++ lib.optionals supportsVoice [
+  ++ lib.optionals voiceSupport [
     # Likewise for the voice loader, independently of daemon mode.
     (replaceVars ./nix-voice-runtime.patch {
       voiceRuntimeRoots = lib.concatStringsSep ":" (map toString voiceRuntimeRoots);
@@ -169,13 +168,13 @@ rustPlatform.buildRustPackage (finalAttrs: {
     libclang
     openssl
   ]
-  ++ lib.optionals supportsVoice [
+  ++ lib.optionals voiceSupport [
     gst_all_1.gstreamer
     gst_all_1.gst-plugins-base
     gst_all_1.gst-plugins-good
     libopus
   ]
-  ++ lib.optionals (supportsVoice && stdenv.hostPlatform.isLinux) [
+  ++ lib.optionals (voiceSupport && stdenv.hostPlatform.isLinux) [
     alsa-lib
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
@@ -201,7 +200,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     RUSTY_V8_SRC_BINDING_PATH = librusty_v8_src_binding;
     STABLE_GIT_COMMIT = finalAttrs.buildCommit;
   }
-  // lib.optionalAttrs supportsVoice {
+  // lib.optionalAttrs voiceSupport {
     OPUS_LIB_DIR = "${lib.getLib libopus}/lib";
   }
   // lib.optionalAttrs stdenv.hostPlatform.isDarwin {
@@ -252,7 +251,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     install -d $out/codex-resources
     ln -s ${lib.getExe bubblewrap} $out/codex-resources/bwrap
   ''
-  + lib.optionalString supportsVoice ''
+  + lib.optionalString voiceSupport ''
     install -d $out/codex-resources/voice/bin
     mv $out/bin/codex-voice-host $out/codex-resources/voice/bin/
     cp -a ${voiceRuntime}/. $out/codex-resources/voice/
@@ -282,7 +281,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
   passthru.tests = {
     app-server-daemon = callPackage ./test-app-server-daemon.nix { codex = finalAttrs.finalPackage; };
   }
-  // lib.optionalAttrs supportsVoice {
+  // lib.optionalAttrs voiceSupport {
     voice-runtime = callPackage ./test-voice-runtime.nix { codex = finalAttrs.finalPackage; };
   };
 
