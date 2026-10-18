@@ -7,6 +7,7 @@ fetchLibrustyV8SrcBinding {
     x86_64-linux = "1m8rqlp3xpgcvd65xsy56aq7z9qr4nl7r7g62xh8myg0vgn5yk9y";
     aarch64-linux = "1m8rqlp3xpgcvd65xsy56aq7z9qr4nl7r7g62xh8myg0vgn5yk9y";
     riscv64-linux = "1m8rqlp3xpgcvd65xsy56aq7z9qr4nl7r7g62xh8myg0vgn5yk9y";
+    x86_64-darwin = "1dg3sxnn2ci01m1hywmanlbp2mmja5jlmvn2yhmyn5d5php6bmdr";
     aarch64-darwin = "1dg3sxnn2ci01m1hywmanlbp2mmja5jlmvn2yhmyn5d5php6bmdr";
   };
 }
