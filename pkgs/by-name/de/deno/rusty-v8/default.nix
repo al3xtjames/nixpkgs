@@ -116,6 +116,9 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   postPatch = ''
     ln -sv ${rustToolchain} third_party/rust-toolchain
+  ''
+  + lib.optionalString stdenv.targetPlatform.isDarwin ''
+    patchShebangs --build build/toolchain/apple/linker_driver.py
   '';
 
   env = {
