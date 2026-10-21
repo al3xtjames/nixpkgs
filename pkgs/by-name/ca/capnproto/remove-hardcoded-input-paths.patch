@@ -1,0 +1,13 @@
+diff --git a/c++/src/capnp/compiler/capnp.c++ b/c++/src/capnp/compiler/capnp.c++
+index 9e41f1f9..3b83d3ca 100644
+--- a/c++/src/capnp/compiler/capnp.c++
++++ b/c++/src/capnp/compiler/capnp.c++
+@@ -349,8 +349,6 @@ public:
+ 
+     if (addStandardImportPaths) {
+       static constexpr kj::StringPtr STANDARD_IMPORT_PATHS[] = {
+-        "/usr/local/include"_kj,
+-        "/usr/include"_kj,
+ #ifdef CAPNP_INCLUDE_DIR
+         KJ_CONCAT(CAPNP_INCLUDE_DIR, _kj),
+ #endif
