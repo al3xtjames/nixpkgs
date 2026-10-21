@@ -436,6 +436,9 @@ let
               "test-os-process-priority"
               "test-runner-run"
               "test-watch-mode-files_watcher"
+
+              # This is flaky with 20+ NIX_BUILD_CORES.
+              "test-worker-memory"
             ]
             ++ lib.optionals stdenv.hostPlatform.isMusl [
               # Doesn't work in sandbox on x86_64.
