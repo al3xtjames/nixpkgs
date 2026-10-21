@@ -45,6 +45,7 @@ clangStdenv.mkDerivation rec {
   patches = [
     # https://github.com/capnproto/capnproto/pull/2377
     ./fix-libucontext.patch
+    ./remove-hardcoded-input-paths.patch
   ];
 
   nativeBuildInputs = [
