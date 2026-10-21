@@ -507,6 +507,10 @@ let
               # This is failing on newer macOS versions, no fix has yet been provided upstream:
               "test-cluster-dgram-1"
             ]
+            ++ lib.optionals (stdenv.buildPlatform.isDarwin) [
+              # This is flaky with 20+ NIX_BUILD_CORES.
+              "test-worker-memory"
+            ]
             ++ lib.optionals stdenv.hostPlatform.isMusl [
               # Doesn't work in sandbox on x86_64.
               "test-dns-set-default-order"
