@@ -130,6 +130,7 @@ let
     inherit (download) url stripRoot;
     hash =
       {
+        x86_64-darwin = "sha256-f3ZirRF10Wrqi8Q8nKJJWQel890qvGeYiP7OwmeijCY=";
         aarch64-darwin = "sha256-utaf65JcLlAXmXCxChPWi5YxbYQA77IYvgFNgW1ALtQ=";
       }
       .${system} or throwSystem;
@@ -138,6 +139,7 @@ in
 {
   x86_64-linux = chromium-linux;
   aarch64-linux = chromium-linux;
+  x86_64-darwin = chromium-darwin;
   aarch64-darwin = chromium-darwin;
 }
 .${system} or throwSystem

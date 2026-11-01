@@ -42,6 +42,7 @@ let
     inherit (download) url stripRoot;
     hash =
       {
+        x86_64-darwin = "sha256-whR5HriVhKfIwWFHpxtqOtzXgIpUHcOTnF0tb8bftn0=";
         aarch64-darwin = "sha256-Yo+y0ISDe8/iG2MsbmZklTcz+HjdblO2lunrpejauks=";
       }
       .${system} or throwSystem;
@@ -50,6 +51,7 @@ in
 {
   x86_64-linux = firefox-linux;
   aarch64-linux = firefox-linux;
+  x86_64-darwin = firefox-darwin;
   aarch64-darwin = firefox-darwin;
 }
 .${system} or throwSystem
