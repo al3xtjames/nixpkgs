@@ -206,6 +206,7 @@ let
     inherit (download) url stripRoot;
     hash =
       {
+        x86_64-darwin = "sha256-1xj47bWfERB+mS1+jjbbdCR9lKerM1jkTfjP3AM/Azs=";
         aarch64-darwin = "sha256-4Y1ojbFTuNZhwx8a8JXkEv6+vejvoATQrhL/wPGJdNI=";
       }
       .${system} or throwSystem;
@@ -214,6 +215,7 @@ in
 {
   x86_64-linux = webkit-linux;
   aarch64-linux = webkit-linux;
+  x86_64-darwin = webkit-darwin;
   aarch64-darwin = webkit-darwin;
 }
 .${system} or throwSystem
