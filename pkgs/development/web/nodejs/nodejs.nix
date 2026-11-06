@@ -444,9 +444,6 @@ let
               "test-os-process-priority"
               "test-runner-run"
               "test-watch-mode-files_watcher"
-
-              # This is failing on newer macOS versions, no fix has yet been provided upstream:
-              "test-cluster-dgram-1"
             ]
             ++ lib.optionals stdenv.hostPlatform.isMusl [
               # Doesn't work in sandbox on x86_64.
