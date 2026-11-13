@@ -30,6 +30,11 @@ rustPlatform.buildRustPackage (finalAttrs: {
   postPatch = ''
     # remove feature that requires libgit2 and is only used to print a version string
     substituteInPlace Cargo.toml --replace-fail '"git_version",' ""
+  ''
+  + lib.optionalString (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isx86_64) ''
+    # Darwin uses `llvm-strip`, which results in link errors when using `-x` to strip the asm library
+    # and linking it with cctools ld64.
+    substituteInPlace build.rs --replace-fail '.arg("-x")' '.arg("-S")'
   '';
 
   checkType = "debug";
