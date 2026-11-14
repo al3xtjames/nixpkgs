@@ -67,6 +67,10 @@ stdenv.mkDerivation (finalAttrs: {
 
   buildInputs = [ swift-syntax ];
 
+  env.NIX_LDFLAGS = lib.optionalString (
+    stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isx86_64
+  ) "-headerpad_max_install_names";
+
   postInstall = (
     if stdenv.hostPlatform.isDarwin then
       ''
