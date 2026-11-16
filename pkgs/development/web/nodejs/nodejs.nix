@@ -439,6 +439,11 @@ let
 
               # This is flaky with 20+ NIX_BUILD_CORES.
               "test-worker-memory"
+
+              # These tests try to connect a non-loopback address, which may
+              # fail if the firewall is enabled.
+              "test-dgram-udp6-link-local-address"
+              "test-inspector-ip-detection"
             ]
             ++ lib.optionals stdenv.hostPlatform.isMusl [
               # Doesn't work in sandbox on x86_64.
