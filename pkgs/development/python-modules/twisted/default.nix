@@ -206,6 +206,12 @@ buildPythonPackage rec {
       # twisted.python.runtime.platform.supportsINotify() == False
       substituteInPlace src/twisted/python/_inotify.py --replace-fail \
         "ctypes.util.find_library(\"c\")" "'${stdenv.cc.libc}/lib/libc.so.6'"
+    ''
+    + lib.optionalString stdenv.hostPlatform.isDarwin ''
+      # Avoid connecting to IPv6 link-local addresses as it may time out when
+      # the macOS application firewall is enabled.
+      substituteInPlace src/twisted/internet/test/test_tcp.py --replace-fail \
+        "_posixifaces.posixGetLinkLocalIPv6Addresses" "lambda: []"
     '';
 
   # Generate Twisted's plug-in cache. Twisted users must do it as well. See
